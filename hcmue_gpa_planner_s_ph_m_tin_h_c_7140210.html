@@ -1,0 +1,2709 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HCMUE GPA Planner — Sư phạm Tin học (7140210)</title>
+
+  <!-- Font Inter hỗ trợ đầy đủ tiếng Việt sắc nét (có fallback system-ui khi offline) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'sans-serif']
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.45); border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(100, 116, 139, 0.7); }
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button { opacity: 0.55; }
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-up { animation: fadeSlideUp 0.2s ease-out forwards; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 font-sans antialiased transition-colors duration-200 min-h-screen flex flex-col">
+
+  <!-- ===================== HEADER ===================== -->
+  <header class="sticky top-0 z-30 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800 shadow-sm">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        <!-- Logo & Tiêu đề -->
+        <div class="flex items-center justify-between gap-3">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-blue-500 text-white flex items-center justify-center shadow-md shadow-indigo-500/20 shrink-0">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+              </svg>
+            </div>
+            <div class="min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
+                <h1 class="text-base sm:text-lg font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight truncate">
+                  HCMUE GPA Planner
+                </h1>
+                <span class="px-2 py-0.5 text-[11px] font-bold rounded-full bg-indigo-50 text-indigo-700 dark:bg-indigo-950/80 dark:text-indigo-300 border border-indigo-200/70 dark:border-indigo-800">
+                  7140210
+                </span>
+              </div>
+              <p class="text-xs text-slate-500 dark:text-slate-400 truncate">
+                Sư phạm Tin học • Trường ĐH Sư phạm TP.HCM
+              </p>
+            </div>
+          </div>
+
+          <!-- Nút chuyển Dark/Light trên mobile -->
+          <button id="themeToggleMobile" type="button" aria-label="Đổi chế độ Sáng/Tối" class="md:hidden p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition shrink-0">
+            <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+            <svg class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+          </button>
+        </div>
+
+        <!-- Thanh công cụ bên phải -->
+        <div class="flex flex-wrap items-center gap-2">
+          <!-- Công tắc toàn cục: Bao gồm môn Dự kiến (What-if) -->
+          <label for="includeSimToggle" class="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-violet-50 dark:bg-violet-950/50 border border-violet-200/80 dark:border-violet-800/80 cursor-pointer select-none hover:bg-violet-100/70 dark:hover:bg-violet-900/50 transition">
+            <div class="relative inline-flex items-center">
+              <input id="includeSimToggle" type="checkbox" class="sr-only peer" />
+              <div class="w-9 h-5 bg-slate-300 dark:bg-slate-700 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-violet-600"></div>
+            </div>
+            <span class="text-xs font-semibold text-violet-900 dark:text-violet-200">
+              Bao gồm môn Dự kiến (What-if)
+            </span>
+            <span id="simCountBadge" class="px-1.5 py-0.5 text-[11px] font-bold rounded-md bg-violet-200/80 dark:bg-violet-800 text-violet-900 dark:text-violet-100">
+              0
+            </span>
+          </label>
+
+          <!-- Nút tra cứu bảng quy đổi điểm HCMUE -->
+          <button id="openScaleModalBtn" type="button" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+            <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            <span>Thang điểm</span>
+          </button>
+
+          <!-- Xuất JSON -->
+          <button id="exportJsonBtn" type="button" title="Xuất file sao lưu (.json)" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+            <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            <span class="hidden sm:inline">Xuất JSON</span>
+          </button>
+
+          <!-- Nhập JSON -->
+          <button id="importJsonBtn" type="button" title="Nhập từ file sao lưu (.json)" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+            <svg class="w-4 h-4 text-sky-600 dark:text-sky-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+            <span class="hidden sm:inline">Nhập JSON</span>
+          </button>
+          <input id="importFileInput" type="file" accept=".json,application/json" class="hidden" />
+
+          <!-- Menu Đặt lại / Khôi phục -->
+          <div class="relative">
+            <button id="resetMenuBtn" type="button" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+              <svg class="w-4 h-4 text-rose-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              <span class="hidden lg:inline">Khôi phục</span>
+            </button>
+            <div id="resetDropdown" class="hidden absolute right-0 mt-2 w-64 rounded-2xl bg-white dark:bg-slate-900 shadow-xl border border-slate-200 dark:border-slate-700 p-1.5 z-40">
+              <button id="clearScoresBtn" type="button" class="w-full text-left px-3 py-2.5 rounded-xl text-xs font-semibold text-amber-700 dark:text-amber-300 hover:bg-amber-50 dark:hover:bg-amber-950/50 transition flex items-center gap-2.5">
+                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                <div>
+                  <div>Xóa toàn bộ điểm đã nhập</div>
+                  <div class="text-[11px] font-normal text-slate-500 dark:text-slate-400">Giữ lại danh sách môn học hiện có</div>
+                </div>
+              </button>
+              <button id="restoreCurriculumBtn" type="button" class="w-full text-left px-3 py-2.5 rounded-xl text-xs font-semibold text-rose-700 dark:text-rose-300 hover:bg-rose-50 dark:hover:bg-rose-950/50 transition flex items-center gap-2.5">
+                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                <div>
+                  <div>Khôi phục CTDT mặc định</div>
+                  <div class="text-[11px] font-normal text-slate-500 dark:text-slate-400">Nạp lại chuẩn 130 TC + 14 TC ĐK</div>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Nút chuyển Dark/Light trên desktop -->
+          <button id="themeToggleDesktop" type="button" aria-label="Đổi chế độ Sáng/Tối" class="hidden md:inline-flex p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+            <svg class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+            <svg class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================== MAIN CONTENT ===================== -->
+  <main class="max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-6 space-y-6 flex-1">
+
+    <!-- Banner thông báo chế độ What-if -->
+    <div id="simBanner" class="hidden rounded-2xl bg-violet-50 dark:bg-violet-950/40 border border-violet-200 dark:border-violet-800/80 px-4 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 animate-fade-up">
+      <div class="flex items-center gap-2.5 text-xs sm:text-sm text-violet-900 dark:text-violet-200">
+        <span class="inline-flex w-2.5 h-2.5 rounded-full bg-violet-500 animate-pulse shrink-0"></span>
+        <span>
+          <strong>Đang tính gộp chế độ Giả lập (What-if):</strong> GPA, mục tiêu và biểu đồ đang bao gồm cả các môn đánh dấu <span class="font-bold underline">Dự kiến</span>.
+        </span>
+      </div>
+      <button id="disableSimBannerBtn" type="button" class="text-xs font-semibold px-3 py-1.5 rounded-xl bg-violet-600 text-white hover:bg-violet-700 transition self-start sm:self-auto shrink-0">
+        Chỉ xem GPA chính thức
+      </button>
+    </div>
+
+    <!-- ===== 1. DASHBOARD TỔNG QUAN (4 THẺ KPI) ===== -->
+    <section aria-label="Tổng quan GPA" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <!-- KPI 1: GPA Tích lũy -->
+      <div class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-5 shadow-sm relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-24 h-24 bg-indigo-500/5 dark:bg-indigo-400/10 rounded-bl-full pointer-events-none"></div>
+        <div class="flex items-center justify-between gap-2 mb-2">
+          <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">GPA Tích lũy (Hệ 4)</span>
+          <span id="kpiRankBadge" class="px-2.5 py-0.5 text-xs font-bold rounded-full bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300">Chưa có điểm</span>
+        </div>
+        <div class="flex items-baseline gap-2">
+          <span id="kpiGpa4" class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white tabular-nums">0.00</span>
+          <span class="text-sm font-medium text-slate-400">/ 4.00</span>
+        </div>
+        <div class="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+          <span>Hệ 10: <strong id="kpiGpa10" class="text-slate-800 dark:text-slate-200 tabular-nums">0.00</strong></span>
+          <span id="kpiScoredCourses">0 môn đã có điểm</span>
+        </div>
+      </div>
+
+      <!-- KPI 2: Tiến độ tín chỉ tính GPA -->
+      <div class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-5 shadow-sm">
+        <div class="flex items-center justify-between gap-2 mb-2">
+          <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Tín chỉ tính GPA</span>
+          <span id="kpiCreditPercent" class="text-xs font-bold text-indigo-600 dark:text-indigo-400 tabular-nums">0%</span>
+        </div>
+        <div class="flex items-baseline gap-1.5">
+          <span id="kpiScoredCredits" class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white tabular-nums">0</span>
+          <span class="text-sm font-medium text-slate-400">/ <span id="kpiTotalCredits">130</span> TC</span>
+        </div>
+        <div class="w-full h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden mt-3">
+          <div id="kpiCreditBar" class="h-full bg-gradient-to-r from-indigo-500 to-blue-500 rounded-full transition-all duration-300" style="width: 0%"></div>
+        </div>
+        <div class="mt-2 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+          <span>Còn lại: <strong id="kpiRemCredits" class="text-slate-800 dark:text-slate-200 tabular-nums">130</strong> TC</span>
+          <span id="kpiFailedNote" class="text-rose-600 dark:text-rose-400 font-semibold hidden"></span>
+        </div>
+      </div>
+
+      <!-- KPI 3: GPA Tối đa có thể đạt -->
+      <div class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-5 shadow-sm">
+        <div class="flex items-center justify-between gap-2 mb-2">
+          <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">GPA Tối đa có thể đạt</span>
+          <span id="kpiMaxRankBadge" class="px-2.5 py-0.5 text-xs font-bold rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300">Xuất sắc</span>
+        </div>
+        <div class="flex items-baseline gap-2">
+          <span id="kpiMaxGpa" class="text-3xl sm:text-4xl font-extrabold tracking-tight text-emerald-600 dark:text-emerald-400 tabular-nums">4.00</span>
+          <span class="text-sm font-medium text-slate-400">/ 4.00</span>
+        </div>
+        <p id="kpiMaxDesc" class="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400">
+          Nếu toàn bộ tín chỉ còn lại đều đạt A (4.0)
+        </p>
+      </div>
+
+      <!-- KPI 4: Học phần điều kiện (GDQP 8 TC + GDTC 6 TC = 14 TC) -->
+      <div class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-5 shadow-sm">
+        <div class="flex items-center justify-between gap-2 mb-2">
+          <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Học phần điều kiện</span>
+          <span class="px-2 py-0.5 text-[11px] font-bold rounded-full bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300">Không tính GPA</span>
+        </div>
+        <div class="flex items-baseline gap-1.5">
+          <span id="kpiCondPassed" class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white tabular-nums">0</span>
+          <span class="text-sm font-medium text-slate-400">/ <span id="kpiCondTotal">14</span> TC Đạt</span>
+        </div>
+        <div class="w-full h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden mt-3">
+          <div id="kpiCondBar" class="h-full bg-gradient-to-r from-amber-500 to-emerald-500 rounded-full transition-all duration-300" style="width: 0%"></div>
+        </div>
+        <div class="mt-2 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+          <span id="kpiGdqpText">GDQP: 0/8 TC</span>
+          <span id="kpiGdtcText">GDTC: 0/6 TC</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 2. HOẠCH ĐỊNH MỤC TIÊU GPA (KHÁ / GIỎI / XUẤT SẮC / TÙY CHỈNH) ===== -->
+    <section aria-label="Hoạch định mốc GPA mục tiêu" class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-5 shadow-sm">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+        <div>
+          <h2 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <svg class="w-5 h-5 text-indigo-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+            Hoạch định Mục tiêu GPA (Khá • Giỏi • Xuất sắc • Tùy chỉnh)
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+            Tự động tính điểm trung bình cần đạt cho các tín chỉ còn lại, gợi ý tổ hợp điểm A/B+/B hoặc danh sách môn cần học cải thiện.
+          </p>
+        </div>
+        <div id="plannerSummaryChip" class="text-xs font-semibold px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 self-start sm:self-auto tabular-nums">
+          Tích lũy: 0.0 / 520.0 (130 TC còn lại)
+        </div>
+      </div>
+      <div id="targetCardsGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+        <!-- Render động -->
+      </div>
+    </section>
+
+    <!-- ===== 3. BIỂU ĐỒ THUẦN SVG/CSS ===== -->
+    <section aria-label="Biểu đồ thống kê" class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+      <!-- Biểu đồ GPA theo từng học kỳ -->
+      <div class="lg:col-span-7 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-5 shadow-sm flex flex-col">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <div>
+            <h2 class="text-base font-bold text-slate-900 dark:text-white">Biểu đồ GPA theo Học kỳ</h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Đối chiếu với 3 mốc tham chiếu Khá (2.5), Giỏi (3.2) và Xuất sắc (3.6)</p>
+          </div>
+          <div class="flex items-center gap-3 text-[11px] font-semibold">
+            <span class="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400"><span class="w-3 h-0.5 border-t-2 border-dashed border-emerald-500"></span>3.6</span>
+            <span class="inline-flex items-center gap-1 text-sky-600 dark:text-sky-400"><span class="w-3 h-0.5 border-t-2 border-dashed border-sky-500"></span>3.2</span>
+            <span class="inline-flex items-center gap-1 text-amber-600 dark:text-amber-400"><span class="w-3 h-0.5 border-t-2 border-dashed border-amber-500"></span>2.5</span>
+          </div>
+        </div>
+        <div id="semesterChartContainer" class="w-full flex-1 flex items-center justify-center min-h-[225px]">
+          <!-- Pure SVG -->
+        </div>
+      </div>
+
+      <!-- Biểu đồ phân bố điểm chữ -->
+      <div class="lg:col-span-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-5 shadow-sm flex flex-col">
+        <div class="mb-4">
+          <h2 class="text-base font-bold text-slate-900 dark:text-white">Phân bố Điểm chữ (A → F)</h2>
+          <p class="text-xs text-slate-500 dark:text-slate-400">Thống kê số môn và số tín chỉ ở từng bậc điểm tính GPA</p>
+        </div>
+        <div id="gradeDistContainer" class="space-y-2.5 flex-1 flex flex-col justify-center">
+          <!-- Render động -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 4. DANH SÁCH CHƯƠNG TRÌNH ĐÀO TẠO (8 HỌC KỲ TÍNH GPA) ===== -->
+    <section aria-label="Danh sách học phần tính GPA" class="space-y-4">
+      <!-- Thanh lọc, tìm kiếm & tabs học kỳ -->
+      <div class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-4 shadow-sm space-y-3">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 flex-1">
+            <div class="relative flex-1 max-w-md">
+              <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+              <input id="searchInput" type="text" placeholder="Tìm tên môn hoặc mã học phần (vd: Lập trình, Web...)" class="w-full pl-10 pr-9 py-2.5 rounded-xl text-sm bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500 transition" />
+              <button id="clearSearchBtn" type="button" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200" aria-label="Xóa từ khóa">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+              </button>
+            </div>
+
+            <select id="statusFilter" class="px-3.5 py-2.5 rounded-xl text-sm font-medium bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500 transition">
+              <option value="all">Tất cả môn tính GPA</option>
+              <option value="scored">Đã có điểm tổng kết</option>
+              <option value="unscored">Chưa có điểm tổng kết</option>
+              <option value="has-comp">Đang nhập điểm quá trình</option>
+              <option value="simulated">Đánh dấu Dự kiến (What-if)</option>
+            </select>
+          </div>
+
+          <div class="flex items-center gap-2 flex-wrap">
+            <a href="#conditionalSection" class="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-amber-50 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 border border-amber-200/80 dark:border-amber-800/70 hover:bg-amber-100/70 dark:hover:bg-amber-900/50 transition">
+              <span>GDQP &amp; GDTC</span>
+              <span id="jumpCondBadge" class="px-1.5 py-0.5 text-[11px] font-bold rounded-md bg-amber-200/80 dark:bg-amber-800 text-amber-900 dark:text-amber-100">0/14</span>
+            </a>
+            <button id="addCourseGlobalBtn" type="button" class="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm shadow-indigo-500/20 transition flex-1 sm:flex-none">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+              Thêm môn học
+            </button>
+          </div>
+        </div>
+
+        <!-- Tabs chọn học kỳ -->
+        <div id="semesterTabs" class="flex items-center gap-1.5 overflow-x-auto pb-1">
+          <!-- Render động -->
+        </div>
+
+        <!-- Mẹo nhanh tính năng Điểm quá trình & Hệ số -->
+        <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 bg-indigo-50/60 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/60 rounded-xl px-3.5 py-2">
+          <svg class="w-4 h-4 text-indigo-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <span>Bấm nút <strong>"Thành phần &amp; Hệ số"</strong> trên bất kỳ môn học nào để tự nhập điểm quá trình, thêm cột điểm, tùy chỉnh hệ số (%) và xem ngay bảng điểm Cuối kỳ tối thiểu cần đạt.</span>
+        </div>
+      </div>
+
+      <!-- Danh sách 8 học kỳ -->
+      <div id="semestersContainer" class="space-y-5">
+        <!-- Render động -->
+      </div>
+    </section>
+
+    <!-- ===== 5. KHU VỰC RIÊNG: HỌC PHẦN ĐIỀU KIỆN (KHÔNG TÍNH GPA) ===== -->
+    <section id="conditionalSection" aria-label="Học phần điều kiện không tính GPA" class="rounded-2xl bg-white dark:bg-slate-900 border-2 border-amber-200/80 dark:border-amber-900/70 shadow-sm overflow-hidden scroll-mt-24">
+      <div class="px-4 sm:px-5 py-4 bg-amber-50/80 dark:bg-amber-950/30 border-b border-amber-200/80 dark:border-amber-900/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <h2 class="text-base sm:text-lg font-extrabold text-amber-950 dark:text-amber-100">
+              Học phần Điều kiện (Không tính GPA)
+            </h2>
+            <span class="px-2.5 py-0.5 text-xs font-bold rounded-full bg-amber-200/80 text-amber-900 dark:bg-amber-900/80 dark:text-amber-200">
+              Tuyệt đối không cộng vào GPA
+            </span>
+          </div>
+          <p class="text-xs sm:text-sm text-amber-800/90 dark:text-amber-300/80 mt-0.5">
+            Gồm Giáo dục Quốc phòng &amp; An ninh (8 TC) và Giáo dục Thể chất (6 TC) — chỉ đánh dấu Đạt / Chưa đạt để xét chứng chỉ tốt nghiệp.
+          </p>
+        </div>
+        <button id="addCondCourseBtn" type="button" class="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold bg-white dark:bg-slate-900 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800 hover:bg-amber-100/70 dark:hover:bg-amber-950 transition shrink-0 self-start sm:self-auto">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+          Thêm học phần ĐK
+        </button>
+      </div>
+
+      <div id="conditionalContainer" class="p-4 sm:p-5 grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <!-- Render động: Khối GDQP (8 TC) & Khối GDTC (6 TC) -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="border-t border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 py-5 mt-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500 dark:text-slate-400">
+      <div>
+        Tự động lưu trên trình duyệt (<code class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono">localStorage</code>) • Chạy độc lập trên GitHub Pages.
+      </div>
+      <div>
+        Khung CTDT tham khảo ngành <strong>Sư phạm Tin học (7140210) — HCMUE</strong> (130 TC GPA + 14 TC Điều kiện).
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===================== MODAL 1: TRA CỨU THANG ĐIỂM CHUẨN HCMUE ===================== -->
+  <div id="scaleModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden animate-fade-up">
+      <div class="px-5 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+        <div>
+          <h3 class="text-lg font-bold text-slate-900 dark:text-white">Bảng Quy đổi Điểm Chuẩn HCMUE</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400">Quy đổi thang điểm 10 ↔ điểm chữ ↔ thang điểm 4 &amp; Xếp loại tốt nghiệp</p>
+        </div>
+        <button type="button" data-close-modal="scaleModal" class="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="p-5 overflow-y-auto space-y-5 text-sm">
+        <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800">
+          <table class="w-full text-left border-collapse">
+            <thead class="bg-slate-50 dark:bg-slate-800/80 text-xs uppercase text-slate-500 dark:text-slate-400">
+              <tr>
+                <th class="py-2.5 px-4 font-semibold">Thang điểm 10</th>
+                <th class="py-2.5 px-4 font-semibold">Điểm chữ</th>
+                <th class="py-2.5 px-4 font-semibold">Thang điểm 4</th>
+                <th class="py-2.5 px-4 font-semibold">Kết quả</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 dark:divide-slate-800 text-xs sm:text-sm">
+              <tr><td class="py-2 px-4 font-medium">8.5 – 10.0</td><td class="py-2 px-4"><span class="px-2 py-0.5 rounded-md font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-300">A</span></td><td class="py-2 px-4 font-semibold">4.0</td><td class="py-2 px-4 text-emerald-600 dark:text-emerald-400 font-medium">Đạt</td></tr>
+              <tr><td class="py-2 px-4 font-medium">7.8 – 8.4</td><td class="py-2 px-4"><span class="px-2 py-0.5 rounded-md font-bold bg-teal-100 text-teal-800 dark:bg-teal-900/60 dark:text-teal-300">B+</span></td><td class="py-2 px-4 font-semibold">3.5</td><td class="py-2 px-4 text-emerald-600 dark:text-emerald-400 font-medium">Đạt</td></tr>
+              <tr><td class="py-2 px-4 font-medium">7.0 – 7.7</td><td class="py-2 px-4"><span class="px-2 py-0.5 rounded-md font-bold bg-sky-100 text-sky-800 dark:bg-sky-900/60 dark:text-sky-300">B</span></td><td class="py-2 px-4 font-semibold">3.0</td><td class="py-2 px-4 text-emerald-600 dark:text-emerald-400 font-medium">Đạt</td></tr>
+              <tr><td class="py-2 px-4 font-medium">6.3 – 6.9</td><td class="py-2 px-4"><span class="px-2 py-0.5 rounded-md font-bold bg-blue-100 text-blue-800 dark:bg-blue-900/60 dark:text-blue-300">C+</span></td><td class="py-2 px-4 font-semibold">2.5</td><td class="py-2 px-4 text-emerald-600 dark:text-emerald-400 font-medium">Đạt</td></tr>
+              <tr><td class="py-2 px-4 font-medium">5.5 – 6.2</td><td class="py-2 px-4"><span class="px-2 py-0.5 rounded-md font-bold bg-indigo-100 text-indigo-800 dark:bg-indigo-900/60 dark:text-indigo-300">C</span></td><td class="py-2 px-4 font-semibold">2.0</td><td class="py-2 px-4 text-emerald-600 dark:text-emerald-400 font-medium">Đạt</td></tr>
+              <tr><td class="py-2 px-4 font-medium">4.8 – 5.4</td><td class="py-2 px-4"><span class="px-2 py-0.5 rounded-md font-bold bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-300">D+</span></td><td class="py-2 px-4 font-semibold">1.5</td><td class="py-2 px-4 text-emerald-600 dark:text-emerald-400 font-medium">Đạt</td></tr>
+              <tr><td class="py-2 px-4 font-medium">4.0 – 4.7</td><td class="py-2 px-4"><span class="px-2 py-0.5 rounded-md font-bold bg-orange-100 text-orange-800 dark:bg-orange-900/60 dark:text-orange-300">D</span></td><td class="py-2 px-4 font-semibold">1.0</td><td class="py-2 px-4 text-emerald-600 dark:text-emerald-400 font-medium">Đạt</td></tr>
+              <tr><td class="py-2 px-4 font-medium">&lt; 4.0 (0.0 – 3.9)</td><td class="py-2 px-4"><span class="px-2 py-0.5 rounded-md font-bold bg-rose-100 text-rose-800 dark:bg-rose-900/60 dark:text-rose-300">F</span></td><td class="py-2 px-4 font-semibold">0.0</td><td class="py-2 px-4 text-rose-600 dark:text-rose-400 font-semibold">Không đạt</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="rounded-xl p-3.5 bg-slate-50 dark:bg-slate-800/60 border border-slate-200/70 dark:border-slate-700/70">
+            <h4 class="font-bold text-slate-900 dark:text-white mb-2 text-xs uppercase tracking-wider">Mốc Xếp loại Tốt nghiệp (Hệ 4)</h4>
+            <ul class="space-y-1.5 text-xs">
+              <li class="flex justify-between"><span class="font-bold text-emerald-600 dark:text-emerald-400">Xuất sắc</span><span class="font-semibold">3.60 – 4.00</span></li>
+              <li class="flex justify-between"><span class="font-bold text-sky-600 dark:text-sky-400">Giỏi</span><span class="font-semibold">3.20 – 3.59</span></li>
+              <li class="flex justify-between"><span class="font-bold text-amber-600 dark:text-amber-400">Khá</span><span class="font-semibold">2.50 – 3.19</span></li>
+              <li class="flex justify-between"><span class="font-bold text-slate-600 dark:text-slate-300">Trung bình</span><span class="font-semibold">2.00 – 2.49</span></li>
+            </ul>
+          </div>
+          <div class="rounded-xl p-3.5 bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200/70 dark:border-amber-800/50">
+            <h4 class="font-bold text-amber-900 dark:text-amber-200 mb-2 text-xs uppercase tracking-wider">Học phần Điều kiện &amp; Làm tròn</h4>
+            <p class="text-xs text-amber-800 dark:text-amber-300 leading-relaxed">
+              Điểm tổng kết môn tính từ các cột thành phần được <strong>làm tròn 1 chữ số thập phân</strong> trước khi quy đổi sang điểm chữ. Học phần <strong>GDQP (8 TC)</strong> và <strong>GDTC (6 TC)</strong> tách riêng, chỉ xét Đạt/Chưa đạt và không tính vào GPA.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== MODAL 2: THÊM / SỬA MÔN HỌC ===================== -->
+  <div id="courseFormModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl max-w-md w-full overflow-hidden animate-fade-up">
+      <div class="px-5 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+        <h3 id="courseModalTitle" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">Thêm học phần mới</h3>
+        <button type="button" data-close-modal="courseFormModal" class="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <form id="courseForm" class="p-5 space-y-4">
+        <input type="hidden" id="formCourseId" />
+        <input type="hidden" id="formCourseKind" value="gpa" />
+
+        <!-- Chọn loại học phần: Tính GPA hay Điều kiện -->
+        <div class="grid grid-cols-2 gap-2 p-1 rounded-xl bg-slate-100 dark:bg-slate-800">
+          <button type="button" id="kindBtnGpa" class="py-2 rounded-lg text-xs font-bold transition">Môn tính GPA (HK 1–8)</button>
+          <button type="button" id="kindBtnCond" class="py-2 rounded-lg text-xs font-bold transition">Điều kiện (GDQP/GDTC)</button>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label for="formCourseCode" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Mã học phần</label>
+            <input id="formCourseCode" type="text" placeholder="Vd: COMP1099" class="w-full px-3 py-2.5 rounded-xl text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/40" />
+          </div>
+          <div>
+            <label for="formCourseCredits" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Số tín chỉ *</label>
+            <input id="formCourseCredits" type="number" required min="1" max="15" step="1" value="3" class="w-full px-3 py-2.5 rounded-xl text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/40" />
+          </div>
+        </div>
+
+        <div>
+          <label for="formCourseName" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Tên học phần *</label>
+          <input id="formCourseName" type="text" required placeholder="Nhập tên học phần..." class="w-full px-3 py-2.5 rounded-xl text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/40" />
+        </div>
+
+        <div id="formSemesterWrap">
+          <label for="formCourseSemester" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Học kỳ</label>
+          <select id="formCourseSemester" class="w-full px-3 py-2.5 rounded-xl text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/40">
+            <option value="1">Học kỳ 1</option>
+            <option value="2">Học kỳ 2</option>
+            <option value="3">Học kỳ 3</option>
+            <option value="4">Học kỳ 4</option>
+            <option value="5">Học kỳ 5</option>
+            <option value="6">Học kỳ 6</option>
+            <option value="7">Học kỳ 7</option>
+            <option value="8">Học kỳ 8</option>
+          </select>
+        </div>
+
+        <div id="formCondGroupWrap" class="hidden">
+          <label for="formCondGroup" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Nhóm học phần điều kiện</label>
+          <select id="formCondGroup" class="w-full px-3 py-2.5 rounded-xl text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/40">
+            <option value="gdqp">Giáo dục Quốc phòng &amp; An ninh</option>
+            <option value="gdtc">Giáo dục Thể chất</option>
+          </select>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-2">
+          <button type="button" data-close-modal="courseFormModal" class="px-4 py-2.5 rounded-xl text-sm font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition">Hủy</button>
+          <button type="submit" class="px-4 py-2.5 rounded-xl text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition">Lưu học phần</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================== MODAL 3: XÁC NHẬN TÙY CHỈNH ===================== -->
+  <div id="confirmModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl max-w-sm w-full p-5 space-y-4 animate-fade-up">
+      <div class="flex items-start gap-3">
+        <div class="w-10 h-10 rounded-xl bg-rose-100 dark:bg-rose-950/70 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        </div>
+        <div>
+          <h3 id="confirmTitle" class="text-base font-bold text-slate-900 dark:text-white">Xác nhận thao tác</h3>
+          <p id="confirmMessage" class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Bạn có chắc chắn muốn thực hiện?</p>
+        </div>
+      </div>
+      <div class="flex items-center justify-end gap-2">
+        <button id="confirmCancelBtn" type="button" class="px-4 py-2 rounded-xl text-sm font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition">Hủy</button>
+        <button id="confirmOkBtn" type="button" class="px-4 py-2 rounded-xl text-sm font-semibold bg-rose-600 hover:bg-rose-700 text-white transition">Xác nhận</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== TOAST CONTAINER ===================== -->
+  <div id="toastContainer" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-xs sm:max-w-sm pointer-events-none"></div>
+
+  <!-- ===================== JAVASCRIPT LOGIC ===================== -->
+  <script>
+    (() => {
+      'use strict';
+
+      // =========================================================================
+      // 1. HẰNG SỐ, THANG ĐIỂM CHUẨN HCMUE & CHƯƠNG TRÌNH ĐÀO TẠO
+      // =========================================================================
+      const STORAGE_KEY = 'hcmue_spth_gpa_planner_v2';
+
+      /**
+       * Thang điểm chuẩn HCMUE:
+       * A (8.5-10.0: 4.0) | B+ (7.8-8.4: 3.5) | B (7.0-7.7: 3.0) | C+ (6.3-6.9: 2.5)
+       * C (5.5-6.2: 2.0)  | D+ (4.8-5.4: 1.5) | D (4.0-4.7: 1.0) | F (<4.0: 0.0)
+       */
+      const HCMUE_SCALE = [
+        { letter: 'A',  gpa4: 4.0, min10: 8.5, max10: 10.0, rep10: 9.0, pass: true,  badge: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-300', bar: 'bg-emerald-500' },
+        { letter: 'B+', gpa4: 3.5, min10: 7.8, max10: 8.4,  rep10: 8.1, pass: true,  badge: 'bg-teal-100 text-teal-800 dark:bg-teal-900/60 dark:text-teal-300',             bar: 'bg-teal-500' },
+        { letter: 'B',  gpa4: 3.0, min10: 7.0, max10: 7.7,  rep10: 7.4, pass: true,  badge: 'bg-sky-100 text-sky-800 dark:bg-sky-900/60 dark:text-sky-300',                 bar: 'bg-sky-500' },
+        { letter: 'C+', gpa4: 2.5, min10: 6.3, max10: 6.9,  rep10: 6.6, pass: true,  badge: 'bg-blue-100 text-blue-800 dark:bg-blue-900/60 dark:text-blue-300',             bar: 'bg-blue-500' },
+        { letter: 'C',  gpa4: 2.0, min10: 5.5, max10: 6.2,  rep10: 5.8, pass: true,  badge: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/60 dark:text-indigo-300',     bar: 'bg-indigo-500' },
+        { letter: 'D+', gpa4: 1.5, min10: 4.8, max10: 5.4,  rep10: 5.1, pass: true,  badge: 'bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-300',         bar: 'bg-amber-500' },
+        { letter: 'D',  gpa4: 1.0, min10: 4.0, max10: 4.7,  rep10: 4.4, pass: true,  badge: 'bg-orange-100 text-orange-800 dark:bg-orange-900/60 dark:text-orange-300',     bar: 'bg-orange-500' },
+        { letter: 'F',  gpa4: 0.0, min10: 0.0, max10: 3.9,  rep10: 2.0, pass: false, badge: 'bg-rose-100 text-rose-800 dark:bg-rose-900/60 dark:text-rose-300',             bar: 'bg-rose-500' }
+      ];
+
+      const PASSING_GRADES = HCMUE_SCALE.filter(g => g.pass);
+
+      // Các mốc dùng cho bảng mini tính ngược điểm Cuối kỳ
+      const REVERSE_MILESTONES = [
+        { letter: 'A',  min10: 8.5, ring: 'hover:border-emerald-400 hover:bg-emerald-50/70 dark:hover:bg-emerald-950/40' },
+        { letter: 'B+', min10: 7.8, ring: 'hover:border-teal-400 hover:bg-teal-50/70 dark:hover:bg-teal-950/40' },
+        { letter: 'B',  min10: 7.0, ring: 'hover:border-sky-400 hover:bg-sky-50/70 dark:hover:bg-sky-950/40' },
+        { letter: 'C+', min10: 6.3, ring: 'hover:border-blue-400 hover:bg-blue-50/70 dark:hover:bg-blue-950/40' },
+        { letter: 'C',  min10: 5.5, ring: 'hover:border-indigo-400 hover:bg-indigo-50/70 dark:hover:bg-indigo-950/40' },
+        { letter: 'D',  min10: 4.0, ring: 'hover:border-amber-400 hover:bg-amber-50/70 dark:hover:bg-amber-950/40' }
+      ];
+
+      // Các bộ tỉ lệ hệ số nhanh phổ biến
+      const WEIGHT_PRESETS = {
+        '30/70': [
+          { name: 'Quá trình', weight: 30, isFinal: false },
+          { name: 'Cuối kỳ',   weight: 70, isFinal: true }
+        ],
+        '40/60': [
+          { name: 'Quá trình', weight: 40, isFinal: false },
+          { name: 'Cuối kỳ',   weight: 60, isFinal: true }
+        ],
+        '50/50': [
+          { name: 'Quá trình', weight: 50, isFinal: false },
+          { name: 'Cuối kỳ',   weight: 50, isFinal: true }
+        ],
+        '20/30/50': [
+          { name: 'Chuyên cần / BT', weight: 20, isFinal: false },
+          { name: 'Giữa kỳ',         weight: 30, isFinal: false },
+          { name: 'Cuối kỳ',         weight: 50, isFinal: true }
+        ]
+      };
+
+      /**
+       * Khung CTDT chuẩn ngành Sư phạm Tin học (7140210) - HCMUE
+       * Tổng đúng 130 TC tính GPA trải đều 8 học kỳ:
+       * HK1: 18 | HK2: 17 | HK3: 15 | HK4: 16 | HK5: 16 | HK6: 17 | HK7: 16 | HK8: 15 => 130 TC
+       */
+      const DEFAULT_GPA_CURRICULUM = [
+        // Học kỳ 1 (18 TC)
+        { code: 'COMP1800', name: 'Cơ sở toán trong Công nghệ thông tin', credits: 4, semester: 1 },
+        { code: 'COMP1801', name: 'Toán rời rạc và ứng dụng', credits: 2, semester: 1 },
+        { code: 'COMP1010', name: 'Lập trình cơ bản', credits: 3, semester: 1 },
+        { code: 'COMP1802', name: 'Thiết kế Web', credits: 2, semester: 1 },
+        { code: 'POLI2001', name: 'Triết học Mác – Lênin', credits: 3, semester: 1 },
+        { code: 'POLI1903', name: 'Pháp luật đại cương', credits: 2, semester: 1 },
+        { code: 'PSYC1001', name: 'Tâm lý học đại cương', credits: 2, semester: 1 },
+
+        // Học kỳ 2 (17 TC)
+        { code: 'COMP1016', name: 'Cấu trúc dữ liệu', credits: 3, semester: 2 },
+        { code: 'COMP1017', name: 'Lập trình hướng đối tượng', credits: 3, semester: 2 },
+        { code: 'POLI2002', name: 'Kinh tế chính trị Mác – Lênin', credits: 2, semester: 2 },
+        { code: 'EDUC2802', name: 'Giáo dục học', credits: 4, semester: 2 },
+        { code: 'PSYC2802', name: 'Tâm lý học lứa tuổi & Tâm lý học sư phạm', credits: 3, semester: 2 },
+        { code: 'ENGL1801', name: 'Tiếng Anh tổng quát / Tự chọn đại cương', credits: 2, semester: 2 },
+
+        // Học kỳ 3 (15 TC)
+        { code: 'COMP1018', name: 'Cơ sở dữ liệu', credits: 3, semester: 3 },
+        { code: 'COMP1015', name: 'Kiến trúc máy tính', credits: 3, semester: 3 },
+        { code: 'COMP1019', name: 'Lập trình trên Windows', credits: 3, semester: 3 },
+        { code: 'POLI2003', name: 'Chủ nghĩa xã hội khoa học', credits: 2, semester: 3 },
+        { code: 'EDUC2801', name: 'Quản lý hành chính NN & Quản lý ngành GD', credits: 2, semester: 3 },
+        { code: 'PSYC2801', name: 'Kỹ năng mềm / Tự chọn đại cương', credits: 2, semester: 3 },
+
+        // Học kỳ 4 (16 TC)
+        { code: 'COMP1013', name: 'Hệ điều hành', credits: 3, semester: 4 },
+        { code: 'COMP1014', name: 'Mạng máy tính', credits: 3, semester: 4 },
+        { code: 'COMP1031', name: 'Phân tích và thiết kế thuật toán', credits: 3, semester: 4 },
+        { code: 'POLI2004', name: 'Tư tưởng Hồ Chí Minh', credits: 2, semester: 4 },
+        { code: 'POLI2005', name: 'Lịch sử Đảng Cộng sản Việt Nam', credits: 2, semester: 4 },
+        { code: 'COMP_TC1', name: 'Học phần Tự chọn cơ sở ngành 1', credits: 3, semester: 4 },
+
+        // Học kỳ 5 (16 TC)
+        { code: 'COMP1327', name: 'Lý luận và phương pháp dạy học Tin học 1', credits: 3, semester: 5 },
+        { code: 'COMP1021', name: 'Phân tích và thiết kế hệ thống thông tin', credits: 3, semester: 5 },
+        { code: 'COMP1035', name: 'Phát triển ứng dụng Web', credits: 3, semester: 5 },
+        { code: 'COMP1205', name: 'Phương pháp nghiên cứu khoa học', credits: 2, semester: 5 },
+        { code: 'EDUC1304', name: 'Kiểm tra, đánh giá trong giáo dục', credits: 2, semester: 5 },
+        { code: 'COMP_TC2', name: 'Học phần Tự chọn chuyên ngành 1', credits: 3, semester: 5 },
+
+        // Học kỳ 6 (17 TC)
+        { code: 'COMP1328', name: 'Lý luận và phương pháp dạy học Tin học 2', credits: 3, semester: 6 },
+        { code: 'COMP1030', name: 'Trí tuệ nhân tạo', credits: 3, semester: 6 },
+        { code: 'COMP1022', name: 'Công nghệ phần mềm', credits: 3, semester: 6 },
+        { code: 'COMP1805', name: 'Ứng dụng CNTT trong dạy học', credits: 3, semester: 6 },
+        { code: 'COMP_TC3', name: 'Học phần Tự chọn chuyên ngành 2', credits: 3, semester: 6 },
+        { code: 'EDUC_TC1', name: 'Học phần Tự chọn nghiệp vụ sư phạm', credits: 2, semester: 6 },
+
+        // Học kỳ 7 (16 TC)
+        { code: 'COMP1823', name: 'Thực tập sư phạm 1', credits: 2, semester: 7 },
+        { code: 'COMP1818', name: 'Rèn luyện nghiệp vụ sư phạm', credits: 2, semester: 7 },
+        { code: 'COMP1329', name: 'Tổ chức hoạt động dạy học Tin học ở phổ thông', credits: 3, semester: 7 },
+        { code: 'COMP1810', name: 'An toàn và bảo mật thông tin', credits: 3, semester: 7 },
+        { code: 'COMP_TC4', name: 'Học phần Tự chọn chuyên ngành 3', credits: 3, semester: 7 },
+        { code: 'COMP_TC5', name: 'Học phần Tự chọn chuyên ngành 4', credits: 3, semester: 7 },
+
+        // Học kỳ 8 (15 TC)
+        { code: 'COMP1824', name: 'Thực tập sư phạm 2', credits: 6, semester: 8 },
+        { code: 'COMP1040', name: 'Khóa luận tốt nghiệp (hoặc học phần thay thế)', credits: 6, semester: 8 },
+        { code: 'COMP_TC6', name: 'Chuyên đề Tin học phổ thông / Tự chọn TN', credits: 3, semester: 8 }
+      ];
+
+      /**
+       * Khu vực Học phần điều kiện (Không tính GPA): 14 TC
+       * - GDQP & AN: 8 TC
+       * - GDTC: 6 TC
+       */
+      const DEFAULT_COND_CURRICULUM = [
+        { code: 'MILI2701', name: 'Đường lối quốc phòng và an ninh của ĐCSVN', credits: 3, group: 'gdqp' },
+        { code: 'MILI2702', name: 'Công tác quốc phòng và an ninh', credits: 2, group: 'gdqp' },
+        { code: 'MILI2703', name: 'Quân sự chung', credits: 1, group: 'gdqp' },
+        { code: 'MILI2704', name: 'Kỹ thuật chiến đấu bộ binh và chiến thuật', credits: 2, group: 'gdqp' },
+        { code: 'PHED1001', name: 'Giáo dục thể chất 1 (Điền kinh)', credits: 2, group: 'gdtc' },
+        { code: 'PHED1002', name: 'Giáo dục thể chất 2 (Tự chọn 1)', credits: 2, group: 'gdtc' },
+        { code: 'PHED1003', name: 'Giáo dục thể chất 3 (Tự chọn 2)', credits: 2, group: 'gdtc' }
+      ];
+
+      // =========================================================================
+      // 2. TRẠNG THÁI ỨNG DỤNG (STATE)
+      // =========================================================================
+      let state = {
+        courses: [],          // Học phần tính GPA (HK 1-8)
+        condCourses: [],      // Học phần điều kiện (GDQP + GDTC, không tính GPA)
+        includeSimulated: true,
+        customTargetGpa: 3.40,
+        selectedSemester: 'all', // 'all' | '1'..'8'
+        searchQuery: '',
+        statusFilter: 'all',
+        expandedCourseIds: {},   // Lưu ID các môn đang mở panel "Thành phần & Hệ số"
+        theme: 'system'
+      };
+
+      let confirmCallback = null;
+
+      // =========================================================================
+      // 3. HÀM TIỆN ÍCH, CHUẨN HÓA DỮ LIỆU & QUY ĐỔI ĐIỂM
+      // =========================================================================
+
+      function generateId(prefix = 'id') {
+        return prefix + '_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 7);
+      }
+
+      /** Làm tròn 1 chữ số thập phân theo quy chế HCMUE */
+      function round1(num) {
+        return Math.round((num + Number.EPSILON) * 10) / 10;
+      }
+
+      function escapeHtml(str) {
+        return String(str ?? '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      /** Tạo danh sách cột điểm thành phần mặc định (40% Quá trình + 60% Cuối kỳ) */
+      function createDefaultComponents() {
+        return [
+          { id: generateId('col'), name: 'Quá trình', weight: 40, score: '', isFinal: false },
+          { id: generateId('col'), name: 'Cuối kỳ',   weight: 60, score: '', isFinal: true }
+        ];
+      }
+
+      /** Parse giá trị điểm (0..10) an toàn, trả về null nếu trống/không hợp lệ */
+      function parseScoreValue(raw) {
+        if (raw === null || raw === undefined || String(raw).trim() === '') return null;
+        const n = parseFloat(raw);
+        if (!Number.isFinite(n)) return null;
+        return Math.max(0, Math.min(10, n));
+      }
+
+      /** Parse trọng số (%) an toàn */
+      function parseWeightValue(raw) {
+        if (raw === null || raw === undefined || String(raw).trim() === '') return 0;
+        const n = parseFloat(raw);
+        if (!Number.isFinite(n)) return 0;
+        return Math.max(0, Math.min(100, n));
+      }
+
+      function score10ToGrade(score10) {
+        if (score10 === null || score10 === undefined || score10 === '' || Number.isNaN(Number(score10))) {
+          return null;
+        }
+        const s = round1(Math.max(0, Math.min(10, Number(score10))));
+        for (const item of HCMUE_SCALE) {
+          if (s >= item.min10) return item;
+        }
+        return HCMUE_SCALE[HCMUE_SCALE.length - 1];
+      }
+
+      function letterToGrade(letter) {
+        return HCMUE_SCALE.find(item => item.letter === letter) || null;
+      }
+
+      function getGpaClassification(gpa4, hasScored = true) {
+        if (!hasScored) return { label: 'Chưa có điểm', cls: 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300' };
+        if (gpa4 >= 3.60) return { label: 'Xuất sắc', cls: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-300' };
+        if (gpa4 >= 3.20) return { label: 'Giỏi', cls: 'bg-sky-100 text-sky-800 dark:bg-sky-900/60 dark:text-sky-300' };
+        if (gpa4 >= 2.50) return { label: 'Khá', cls: 'bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-300' };
+        if (gpa4 >= 2.00) return { label: 'Trung bình', cls: 'bg-slate-200 text-slate-800 dark:bg-slate-700 dark:text-slate-200' };
+        return { label: 'Dưới TB', cls: 'bg-rose-100 text-rose-800 dark:bg-rose-900/60 dark:text-rose-300' };
+      }
+
+      function normalizeComponents(comps) {
+        if (!Array.isArray(comps) || comps.length === 0) return createDefaultComponents();
+        const normalized = comps.map((col, idx) => ({
+          id: col.id || generateId('col'),
+          name: String(col.name ?? `Cột ${idx + 1}`).trim() || `Cột ${idx + 1}`,
+          weight: parseWeightValue(col.weight),
+          score: (col.score !== null && col.score !== undefined && String(col.score).trim() !== '')
+            ? String(col.score).trim()
+            : '',
+          isFinal: Boolean(col.isFinal)
+        }));
+        // Đảm bảo có đúng 1 cột được đánh dấu là Cuối kỳ
+        const finalIndices = normalized.reduce((acc, c, i) => (c.isFinal ? [...acc, i] : acc), []);
+        if (finalIndices.length === 0) {
+          normalized[normalized.length - 1].isFinal = true;
+        } else if (finalIndices.length > 1) {
+          normalized.forEach((c, i) => { c.isFinal = i === finalIndices[finalIndices.length - 1]; });
+        }
+        return normalized;
+      }
+
+      function normalizeGpaCourse(c) {
+        const score10 = (c.score10 !== null && c.score10 !== undefined && c.score10 !== '' && !Number.isNaN(Number(c.score10)))
+          ? round1(Math.max(0, Math.min(10, Number(c.score10))))
+          : null;
+        let letter = typeof c.letter === 'string' ? c.letter : '';
+        if (score10 !== null) {
+          const g = score10ToGrade(score10);
+          letter = g ? g.letter : '';
+        } else if (letter) {
+          const g = letterToGrade(letter);
+          if (!g) letter = '';
+        }
+
+        // Chuyển đổi tương thích ngược nếu file JSON cũ dùng cấu trúc comp { wQt, qt, ck }
+        let components = c.components;
+        if (!Array.isArray(components) && c.comp) {
+          const wQt = parseWeightValue(c.comp.wQt ?? 40);
+          components = [
+            { id: generateId('col'), name: 'Quá trình', weight: wQt, score: c.comp.qt ?? '', isFinal: false },
+            { id: generateId('col'), name: 'Cuối kỳ',   weight: 100 - wQt, score: c.comp.ck ?? '', isFinal: true }
+          ];
+        }
+
+        return {
+          id: c.id || generateId('c'),
+          code: String(c.code ?? '').trim(),
+          name: String(c.name ?? 'Học phần mới').trim() || 'Học phần mới',
+          credits: Math.max(1, Math.min(15, parseInt(c.credits, 10) || 2)),
+          semester: Math.max(1, Math.min(8, parseInt(c.semester, 10) || 1)),
+          score10,
+          letter,
+          isSimulated: Boolean(c.isSimulated),
+          components: normalizeComponents(components)
+        };
+      }
+
+      function normalizeCondCourse(c) {
+        let group = c.group;
+        if (group !== 'gdqp' && group !== 'gdtc') {
+          const upper = String(c.code || '').toUpperCase();
+          const lower = String(c.name || '').toLowerCase();
+          group = (upper.startsWith('PHED') || lower.includes('thể chất')) ? 'gdtc' : 'gdqp';
+        }
+        return {
+          id: c.id || generateId('cond'),
+          code: String(c.code ?? '').trim(),
+          name: String(c.name ?? 'Học phần điều kiện').trim() || 'Học phần điều kiện',
+          credits: Math.max(1, Math.min(15, parseInt(c.credits, 10) || 2)),
+          group,
+          status: ['pending', 'pass', 'fail'].includes(c.status || c.condStatus) ? (c.status || c.condStatus) : 'pending'
+        };
+      }
+
+      function buildDefaultGpaCourses() {
+        return DEFAULT_GPA_CURRICULUM.map((c, idx) => normalizeGpaCourse({
+          id: 'gpa_' + idx + '_' + c.code,
+          code: c.code,
+          name: c.name,
+          credits: c.credits,
+          semester: c.semester,
+          score10: null,
+          letter: '',
+          isSimulated: false,
+          components: createDefaultComponents()
+        }));
+      }
+
+      function buildDefaultCondCourses() {
+        return DEFAULT_COND_CURRICULUM.map((c, idx) => normalizeCondCourse({
+          id: 'cond_' + idx + '_' + c.code,
+          code: c.code,
+          name: c.name,
+          credits: c.credits,
+          group: c.group,
+          status: 'pending'
+        }));
+      }
+
+      function saveState() {
+        try {
+          const payload = {
+            version: 2,
+            courses: state.courses,
+            condCourses: state.condCourses,
+            includeSimulated: state.includeSimulated,
+            customTargetGpa: state.customTargetGpa,
+            theme: state.theme
+          };
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+        } catch (err) {
+          console.error('Lỗi lưu localStorage:', err);
+        }
+      }
+
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) {
+            state.courses = buildDefaultGpaCourses();
+            state.condCourses = buildDefaultCondCourses();
+            return;
+          }
+          const parsed = JSON.parse(raw);
+          state.courses = Array.isArray(parsed.courses) && parsed.courses.length > 0
+            ? parsed.courses.map(normalizeGpaCourse)
+            : buildDefaultGpaCourses();
+          state.condCourses = Array.isArray(parsed.condCourses)
+            ? parsed.condCourses.map(normalizeCondCourse)
+            : buildDefaultCondCourses();
+          state.includeSimulated = typeof parsed.includeSimulated === 'boolean' ? parsed.includeSimulated : true;
+          state.customTargetGpa = typeof parsed.customTargetGpa === 'number' && !Number.isNaN(parsed.customTargetGpa)
+            ? Math.max(1.0, Math.min(4.0, parsed.customTargetGpa))
+            : 3.40;
+          state.theme = parsed.theme || 'system';
+        } catch (err) {
+          console.error('Lỗi đọc localStorage, nạp dữ liệu mặc định:', err);
+          state.courses = buildDefaultGpaCourses();
+          state.condCourses = buildDefaultCondCourses();
+        }
+      }
+
+      // =========================================================================
+      // 4. LOGIC ĐIỂM QUÁ TRÌNH, HỆ SỐ & TÍNH NGƯỢC ĐIỂM CUỐI KỲ
+      // =========================================================================
+
+      /**
+       * Phân tích các cột điểm thành phần của 1 môn học:
+       * - Tính tổng hệ số (%)
+       * - Kiểm tra đã nhập đủ điểm tất cả các cột chưa
+       * - Kiểm tra có thể tính ngược điểm Cuối kỳ chưa
+       * - Tạo badge tóm tắt nhanh hiển thị ngay trên dòng môn học
+       */
+      function evaluateComponents(course) {
+        const cols = course.components || [];
+        const totalWeightRaw = cols.reduce((sum, col) => sum + parseWeightValue(col.weight), 0);
+        const totalWeight = Math.round(totalWeightRaw * 100) / 100;
+        const isWeightValid = Math.abs(totalWeight - 100) < 0.01;
+
+        let anyScoreEntered = false;
+        let allScoresEntered = cols.length > 0;
+        let weightedSum = 0;
+
+        let finalCol = cols.find(c => c.isFinal) || cols[cols.length - 1] || null;
+        let nonFinalAllScored = true;
+        let nonFinalWeightedSum = 0;
+
+        cols.forEach(col => {
+          const w = parseWeightValue(col.weight);
+          const s = parseScoreValue(col.score);
+          if (s !== null) {
+            anyScoreEntered = true;
+            weightedSum += s * w;
+          } else {
+            allScoresEntered = false;
+          }
+
+          if (col !== finalCol) {
+            if (s !== null) {
+              nonFinalWeightedSum += s * w;
+            } else if (w > 0) {
+              nonFinalAllScored = false;
+            }
+          }
+        });
+
+        const finalScoreVal = finalCol ? parseScoreValue(finalCol.score) : null;
+        const finalWeight = finalCol ? parseWeightValue(finalCol.weight) : 0;
+
+        const computedScore10 = (isWeightValid && allScoresEntered)
+          ? round1(weightedSum / 100)
+          : null;
+
+        // Tính ngược điểm Cuối kỳ tối thiểu cho từng mốc chữ (A -> D)
+        // Dùng duyệt bước 0.1 từ 0.0 -> 10.0 để khớp 100% với quy tắc làm tròn 1 chữ số thập phân
+        let reverseTargets = null;
+        const hasNonFinalCols = cols.some(c => c !== finalCol && parseWeightValue(c.weight) > 0);
+        const canReverseCalc = isWeightValid && finalCol && finalWeight > 0 && hasNonFinalCols && nonFinalAllScored;
+
+        if (canReverseCalc) {
+          reverseTargets = REVERSE_MILESTONES.map(m => {
+            let needed = null;
+            for (let i = 0; i <= 100; i++) {
+              const candidateCk = i / 10;
+              const projected = round1((nonFinalWeightedSum + candidateCk * finalWeight) / 100);
+              if (projected >= m.min10 - 1e-9) {
+                needed = candidateCk;
+                break;
+              }
+            }
+            let status = 'achievable';
+            if (needed === 0) status = 'guaranteed';
+            else if (needed === null) status = 'impossible';
+            return {
+              ...m,
+              needed, // null nếu > 10.0, 0 nếu <= 0, hoặc số thực 0.1..10.0
+              status
+            };
+          });
+        }
+
+        // Tạo nhãn tóm tắt ngắn gọn hiển thị trên dòng môn học
+        let summaryText = '';
+        if (anyScoreEntered) {
+          summaryText = cols.map(col => {
+            const shortName = abbreviateColName(col.name, col.isFinal);
+            const s = parseScoreValue(col.score);
+            const sTxt = s !== null ? s.toFixed(1).replace(/\.0$/, '') : '—';
+            const wTxt = parseWeightValue(col.weight);
+            return `${shortName} ${sTxt} (${wTxt}%)`;
+          }).join(' · ');
+        } else {
+          // Hiển thị tỉ lệ hệ số nếu người dùng đã tùy chỉnh khác mặc định 40/60 hoặc nhiều hơn 2 cột
+          const ratioStr = cols.map(c => parseWeightValue(c.weight)).join('/');
+          summaryText = ratioStr;
+        }
+
+        return {
+          totalWeight,
+          isWeightValid,
+          anyScoreEntered,
+          allScoresEntered,
+          computedScore10,
+          finalCol,
+          finalScoreVal,
+          finalWeight,
+          canReverseCalc,
+          isFinalEmpty: finalScoreVal === null,
+          reverseTargets,
+          summaryText
+        };
+      }
+
+      /** Viết tắt tên cột ngắn gọn cho badge tóm tắt */
+      function abbreviateColName(name, isFinal) {
+        const lower = String(name || '').trim().toLowerCase();
+        if (lower.includes('quá trình')) return 'QT';
+        if (lower.includes('cuối kỳ') || isFinal) return 'CK';
+        if (lower.includes('giữa kỳ')) return 'GK';
+        if (lower.includes('chuyên cần')) return 'CC';
+        if (lower.includes('thực hành')) return 'TH';
+        if (lower.includes('bài tập')) return 'BT';
+        return name.length > 8 ? name.slice(0, 7) + '…' : name;
+      }
+
+      /**
+       * Đồng bộ kết quả từ các cột thành phần lên điểm tổng kết của môn học
+       * khi đã nhập đủ điểm và tổng hệ số = 100%.
+       */
+      function syncCourseFromComponents(course) {
+        const ev = evaluateComponents(course);
+        if (ev.computedScore10 !== null) {
+          course.score10 = ev.computedScore10;
+          const g = score10ToGrade(course.score10);
+          course.letter = g ? g.letter : '';
+        }
+        return ev;
+      }
+
+      // =========================================================================
+      // 5. ĐỘNG CƠ TÍNH TOÁN GPA, MỤC TIÊU & CẢI THIỆN ĐIỂM
+      // =========================================================================
+
+      function isCourseActiveInGpa(course) {
+        if (!state.includeSimulated && course.isSimulated) return false;
+        return course.score10 !== null || Boolean(course.letter);
+      }
+
+      function getCourseGrades(course) {
+        if (course.score10 !== null) {
+          const g = score10ToGrade(course.score10);
+          return { score10: course.score10, gpa4: g.gpa4, letter: g.letter, pass: g.pass, badge: g.badge };
+        }
+        if (course.letter) {
+          const g = letterToGrade(course.letter);
+          if (g) return { score10: g.rep10, gpa4: g.gpa4, letter: g.letter, pass: g.pass, badge: g.badge };
+        }
+        return null;
+      }
+
+      function computeAnalytics() {
+        let totalGpaCredits = 0;
+        let scoredGpaCredits = 0;
+        let passedGpaCredits = 0;
+        let failedGpaCredits = 0;
+        let scoredCourseCount = 0;
+        let totalPoints4 = 0;
+        let totalPoints10 = 0;
+        let simCoursesCount = 0;
+
+        const dist = {};
+        HCMUE_SCALE.forEach(g => { dist[g.letter] = { count: 0, credits: 0 }; });
+
+        const semesters = {};
+        for (let s = 1; s <= 8; s++) {
+          semesters[s] = { semester: s, totalGpaCredits: 0, scoredCredits: 0, points4: 0, points10: 0, gpa4: null, gpa10: null };
+        }
+
+        const activeScoredCourses = [];
+
+        state.courses.forEach(course => {
+          const sem = semesters[course.semester] || semesters[1];
+          totalGpaCredits += course.credits;
+          sem.totalGpaCredits += course.credits;
+          if (course.isSimulated) simCoursesCount++;
+
+          if (isCourseActiveInGpa(course)) {
+            const g = getCourseGrades(course);
+            if (g) {
+              scoredGpaCredits += course.credits;
+              scoredCourseCount++;
+              totalPoints4 += g.gpa4 * course.credits;
+              totalPoints10 += g.score10 * course.credits;
+
+              if (g.pass) passedGpaCredits += course.credits;
+              else failedGpaCredits += course.credits;
+
+              sem.scoredCredits += course.credits;
+              sem.points4 += g.gpa4 * course.credits;
+              sem.points10 += g.score10 * course.credits;
+
+              if (dist[g.letter]) {
+                dist[g.letter].count += 1;
+                dist[g.letter].credits += course.credits;
+              }
+              activeScoredCourses.push({ course, grade: g });
+            }
+          }
+        });
+
+        for (let s = 1; s <= 8; s++) {
+          if (semesters[s].scoredCredits > 0) {
+            semesters[s].gpa4 = semesters[s].points4 / semesters[s].scoredCredits;
+            semesters[s].gpa10 = semesters[s].points10 / semesters[s].scoredCredits;
+          }
+        }
+
+        // Học phần điều kiện (GDQP + GDTC) — tách biệt hoàn toàn, không cộng vào GPA
+        let condTotalCredits = 0, condPassedCredits = 0;
+        let gdqpTotal = 0, gdqpPassed = 0;
+        let gdtcTotal = 0, gdtcPassed = 0;
+
+        state.condCourses.forEach(c => {
+          condTotalCredits += c.credits;
+          const isPass = c.status === 'pass';
+          if (isPass) condPassedCredits += c.credits;
+          if (c.group === 'gdqp') {
+            gdqpTotal += c.credits;
+            if (isPass) gdqpPassed += c.credits;
+          } else {
+            gdtcTotal += c.credits;
+            if (isPass) gdtcPassed += c.credits;
+          }
+        });
+
+        const remainingGpaCredits = Math.max(0, totalGpaCredits - scoredGpaCredits);
+        const currentGpa4 = scoredGpaCredits > 0 ? totalPoints4 / scoredGpaCredits : 0;
+        const currentGpa10 = scoredGpaCredits > 0 ? totalPoints10 / scoredGpaCredits : 0;
+        const maxPossibleGpa4 = totalGpaCredits > 0
+          ? (totalPoints4 + remainingGpaCredits * 4.0) / totalGpaCredits
+          : 4.0;
+
+        return {
+          totalGpaCredits,
+          scoredGpaCredits,
+          passedGpaCredits,
+          failedGpaCredits,
+          remainingGpaCredits,
+          scoredCourseCount,
+          totalPoints4,
+          totalPoints10,
+          currentGpa4,
+          currentGpa10,
+          maxPossibleGpa4,
+          condTotalCredits,
+          condPassedCredits,
+          gdqpTotal,
+          gdqpPassed,
+          gdtcTotal,
+          gdtcPassed,
+          simCoursesCount,
+          dist,
+          semesters,
+          activeScoredCourses
+        };
+      }
+
+      /** Gợi ý tổ hợp số tín chỉ cụ thể đạt A / B+ / B cho phần tín chỉ còn lại */
+      function buildGradeCombination(neededAvg, remainingCredits, neededPoints) {
+        if (remainingCredits <= 0) return '';
+        if (neededAvg <= 1.0) {
+          return `Chỉ cần qua môn (tối thiểu D = 1.0) toàn bộ ${remainingCredits} TC còn lại.`;
+        }
+
+        let highIdx = 0;
+        for (let i = PASSING_GRADES.length - 1; i >= 0; i--) {
+          if (PASSING_GRADES[i].gpa4 >= neededAvg - 1e-9) {
+            highIdx = i;
+            break;
+          }
+        }
+        const gHigh = PASSING_GRADES[highIdx];
+        const gLow = PASSING_GRADES[Math.min(highIdx + 1, PASSING_GRADES.length - 1)];
+
+        if (gHigh.gpa4 === gLow.gpa4) {
+          return `Toàn bộ ${remainingCredits} TC còn lại cần đạt ${gHigh.letter} (${gHigh.gpa4.toFixed(1)}).`;
+        }
+
+        const diff = gHigh.gpa4 - gLow.gpa4;
+        const cHigh = Math.max(0, Math.min(remainingCredits, Math.ceil((neededPoints - remainingCredits * gLow.gpa4 - 1e-9) / diff)));
+        const cLow = remainingCredits - cHigh;
+
+        let text = '';
+        if (cHigh === remainingCredits) {
+          text = `Toàn bộ ${remainingCredits} TC đạt ${gHigh.letter} (${gHigh.gpa4.toFixed(1)})`;
+        } else if (cHigh === 0) {
+          text = `Toàn bộ ${remainingCredits} TC đạt ${gLow.letter} (${gLow.gpa4.toFixed(1)})`;
+        } else {
+          text = `~${cHigh} TC ${gHigh.letter} (${gHigh.gpa4.toFixed(1)}) + ${cLow} TC ${gLow.letter} (${gLow.gpa4.toFixed(1)})`;
+        }
+
+        if (neededAvg > 3.0 && neededAvg < 3.5) {
+          const cA = Math.max(0, Math.min(remainingCredits, Math.ceil((neededPoints - remainingCredits * 3.0 - 1e-9) / 1.0)));
+          const cB = remainingCredits - cA;
+          if (cA > 0 && cB > 0) {
+            text += ` hoặc ~${cA} TC A + ${cB} TC B`;
+          }
+        }
+        return text + '.';
+      }
+
+      /** Đề xuất các môn điểm thấp nhất cần học cải thiện lên A (4.0) kèm tổng số tín chỉ cần cải thiện */
+      function suggestRetakeCourses(deficitPoints, activeScoredCourses) {
+        if (deficitPoints <= 1e-9) return { picks: [], totalCredits: 0, totalGain: 0 };
+        const candidates = activeScoredCourses
+          .filter(item => item.grade.gpa4 < 4.0)
+          .sort((a, b) => {
+            if (a.grade.gpa4 !== b.grade.gpa4) return a.grade.gpa4 - b.grade.gpa4;
+            return b.course.credits - a.course.credits;
+          });
+
+        const picks = [];
+        let totalGain = 0;
+        let totalCredits = 0;
+        for (const item of candidates) {
+          const gain = (4.0 - item.grade.gpa4) * item.course.credits;
+          picks.push({
+            code: item.course.code || 'Môn',
+            name: item.course.name,
+            credits: item.course.credits,
+            fromLetter: item.grade.letter,
+            gain
+          });
+          totalGain += gain;
+          totalCredits += item.course.credits;
+          if (totalGain >= deficitPoints - 1e-9) break;
+        }
+        return { picks, totalCredits, totalGain };
+      }
+
+      /** Phân tích 1 mốc GPA mục tiêu */
+      function analyzeTarget(targetGpa, a) {
+        const { totalGpaCredits, scoredGpaCredits, remainingGpaCredits, totalPoints4, currentGpa4, activeScoredCourses } = a;
+        const targetPoints = targetGpa * totalGpaCredits;
+        const neededPoints = targetPoints - totalPoints4;
+
+        if (totalGpaCredits <= 0) {
+          return { status: 'empty', statusLabel: 'Chưa có dữ liệu', neededPoints: 0, neededAvg: 0, combo: '', retake: null };
+        }
+
+        if (remainingGpaCredits === 0) {
+          if (currentGpa4 + 1e-9 >= targetGpa) {
+            return {
+              status: 'achieved',
+              statusLabel: 'Đã vượt mốc',
+              neededPoints: 0,
+              neededAvg: 0,
+              combo: `Bạn đã hoàn thành toàn bộ ${totalGpaCredits} TC với GPA ${currentGpa4.toFixed(2)}.`,
+              retake: null
+            };
+          }
+          const retake = suggestRetakeCourses(neededPoints, activeScoredCourses);
+          return {
+            status: 'impossible',
+            statusLabel: 'Cần học cải thiện',
+            neededPoints,
+            neededAvg: null,
+            combo: `Thiếu ${neededPoints.toFixed(1)} điểm tích lũy (GPA×TC) để đạt mốc ${targetGpa.toFixed(2)}.`,
+            retake
+          };
+        }
+
+        const neededAvg = neededPoints / remainingGpaCredits;
+
+        // Nếu ngay cả khi toàn bộ TC còn lại chỉ đạt D (1.0) vẫn >= mốc
+        if (scoredGpaCredits > 0 && (totalPoints4 + remainingGpaCredits * 1.0) >= targetPoints - 1e-9) {
+          return {
+            status: 'achieved',
+            statusLabel: 'Đã vượt mốc an toàn',
+            neededPoints: Math.max(0, neededPoints),
+            neededAvg: Math.max(0, neededAvg),
+            combo: `Chỉ cần qua môn (≥ D) tất cả ${remainingGpaCredits} TC còn lại là chắc chắn đạt mốc này.`,
+            retake: null
+          };
+        }
+
+        if (neededAvg > 4.0 + 1e-9) {
+          const deficitAfterAllA = targetPoints - (totalPoints4 + remainingGpaCredits * 4.0);
+          const retake = suggestRetakeCourses(deficitAfterAllA, activeScoredCourses);
+          return {
+            status: 'impossible',
+            statusLabel: 'Cần học cải thiện',
+            neededPoints,
+            neededAvg,
+            combo: `Dù đạt A toàn bộ ${remainingGpaCredits} TC còn lại vẫn thiếu ${deficitAfterAllA.toFixed(1)} điểm tích lũy.`,
+            retake
+          };
+        }
+
+        let status = 'easy';
+        let statusLabel = 'Khả thi • Dễ';
+        if (neededAvg > 3.6) {
+          status = 'hard';
+          statusLabel = 'Khả thi • Rất căng';
+        } else if (neededAvg > 3.2) {
+          status = 'medium-hard';
+          statusLabel = 'Khả thi • Cần cố gắng';
+        } else if (neededAvg > 2.5) {
+          status = 'medium';
+          statusLabel = 'Khả thi • Vừa sức';
+        }
+
+        return {
+          status,
+          statusLabel,
+          neededPoints: Math.max(0, neededPoints),
+          neededAvg: Math.max(0, neededAvg),
+          combo: buildGradeCombination(neededAvg, remainingGpaCredits, neededPoints),
+          retake: null
+        };
+      }
+
+      // =========================================================================
+      // 6. RENDER GIAO DIỆN
+      // =========================================================================
+
+      /** Cập nhật phần số liệu phân tích mà KHÔNG phá DOM danh sách môn học (tránh mất focus khi gõ) */
+      function renderAnalyticsOnly() {
+        const a = computeAnalytics();
+        renderHeaderControls(a);
+        renderKpis(a);
+        renderTargetPlanner(a);
+        renderSemesterChart(a);
+        renderGradeDistribution(a);
+
+        // Cập nhật badge GPA ngay trên tiêu đề từng học kỳ đang hiển thị
+        for (let s = 1; s <= 8; s++) {
+          const badgeEl = document.getElementById(`semGpaBadge_${s}`);
+          if (badgeEl) {
+            const st = a.semesters[s];
+            if (st.gpa4 !== null) {
+              badgeEl.className = 'px-2.5 py-1 rounded-lg text-xs font-bold bg-indigo-50 dark:bg-indigo-950/70 text-indigo-700 dark:text-indigo-300 border border-indigo-200/70 dark:border-indigo-800 tabular-nums';
+              badgeEl.innerHTML = `GPA HK: ${st.gpa4.toFixed(2)} <span class="font-normal opacity-75">(${st.gpa10.toFixed(1)}/10)</span>`;
+            } else {
+              badgeEl.className = 'px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400';
+              badgeEl.textContent = 'Chưa có điểm';
+            }
+          }
+        }
+        return a;
+      }
+
+      /** Render toàn bộ ứng dụng */
+      function renderAll() {
+        const a = renderAnalyticsOnly();
+        renderSemesterTabs();
+        renderSemestersList(a);
+        renderConditionalSection();
+      }
+
+      function renderHeaderControls(a) {
+        document.getElementById('includeSimToggle').checked = state.includeSimulated;
+        document.getElementById('simCountBadge').textContent = a.simCoursesCount;
+        document.getElementById('jumpCondBadge').textContent = `${a.condPassedCredits}/${a.condTotalCredits}`;
+
+        const banner = document.getElementById('simBanner');
+        if (state.includeSimulated && a.simCoursesCount > 0) banner.classList.remove('hidden');
+        else banner.classList.add('hidden');
+      }
+
+      function renderKpis(a) {
+        const hasScored = a.scoredGpaCredits > 0;
+        const rank = getGpaClassification(a.currentGpa4, hasScored);
+        const maxRank = getGpaClassification(a.maxPossibleGpa4, true);
+
+        document.getElementById('kpiGpa4').textContent = hasScored ? a.currentGpa4.toFixed(2) : '0.00';
+        document.getElementById('kpiGpa10').textContent = hasScored ? a.currentGpa10.toFixed(2) : '0.00';
+        document.getElementById('kpiScoredCourses').textContent = `${a.scoredCourseCount} môn đã có điểm`;
+
+        const rankEl = document.getElementById('kpiRankBadge');
+        rankEl.textContent = rank.label;
+        rankEl.className = `px-2.5 py-0.5 text-xs font-bold rounded-full ${rank.cls}`;
+
+        const creditPct = a.totalGpaCredits > 0 ? Math.min(100, Math.round((a.scoredGpaCredits / a.totalGpaCredits) * 100)) : 0;
+        document.getElementById('kpiScoredCredits').textContent = a.scoredGpaCredits;
+        document.getElementById('kpiTotalCredits').textContent = a.totalGpaCredits;
+        document.getElementById('kpiCreditPercent').textContent = `${creditPct}%`;
+        document.getElementById('kpiCreditBar').style.width = `${creditPct}%`;
+        document.getElementById('kpiRemCredits').textContent = a.remainingGpaCredits;
+
+        const failedNote = document.getElementById('kpiFailedNote');
+        if (a.failedGpaCredits > 0) {
+          failedNote.textContent = `Chưa đạt: ${a.failedGpaCredits} TC`;
+          failedNote.classList.remove('hidden');
+        } else {
+          failedNote.classList.add('hidden');
+        }
+
+        document.getElementById('kpiMaxGpa').textContent = a.maxPossibleGpa4.toFixed(2);
+        const maxRankEl = document.getElementById('kpiMaxRankBadge');
+        maxRankEl.textContent = maxRank.label;
+        maxRankEl.className = `px-2.5 py-0.5 text-xs font-bold rounded-full ${maxRank.cls}`;
+        document.getElementById('kpiMaxDesc').textContent = a.remainingGpaCredits > 0
+          ? `Nếu ${a.remainingGpaCredits} TC còn lại đều đạt A (4.0)`
+          : 'Đã nhập điểm toàn bộ tín chỉ tính GPA';
+
+        const condPct = a.condTotalCredits > 0 ? Math.min(100, Math.round((a.condPassedCredits / a.condTotalCredits) * 100)) : 0;
+        document.getElementById('kpiCondPassed').textContent = a.condPassedCredits;
+        document.getElementById('kpiCondTotal').textContent = a.condTotalCredits;
+        document.getElementById('kpiCondBar').style.width = `${condPct}%`;
+        document.getElementById('kpiGdqpText').textContent = `GDQP: ${a.gdqpPassed}/${a.gdqpTotal} TC`;
+        document.getElementById('kpiGdtcText').textContent = `GDTC: ${a.gdtcPassed}/${a.gdtcTotal} TC`;
+      }
+
+      function renderTargetPlanner(a) {
+        document.getElementById('plannerSummaryChip').textContent =
+          `Tích lũy: ${a.totalPoints4.toFixed(1)} / ${(a.totalGpaCredits * 4).toFixed(1)} (${a.remainingGpaCredits} TC còn lại)`;
+
+        const targets = [
+          { title: 'Mốc Khá',       gpa: 2.50, isCustom: false },
+          { title: 'Mốc Giỏi',      gpa: 3.20, isCustom: false },
+          { title: 'Mốc Xuất sắc',  gpa: 3.60, isCustom: false },
+          { title: 'Mốc Tùy chỉnh', gpa: state.customTargetGpa, isCustom: true }
+        ];
+
+        const styles = {
+          achieved:      { badge: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-300', border: 'border-emerald-200 dark:border-emerald-800/70', avg: 'text-emerald-600 dark:text-emerald-400' },
+          easy:          { badge: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-300', border: 'border-slate-200 dark:border-slate-800', avg: 'text-emerald-600 dark:text-emerald-400' },
+          medium:        { badge: 'bg-sky-100 text-sky-800 dark:bg-sky-900/60 dark:text-sky-300', border: 'border-slate-200 dark:border-slate-800', avg: 'text-sky-600 dark:text-sky-400' },
+          'medium-hard': { badge: 'bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-300', border: 'border-amber-200/80 dark:border-amber-800/60', avg: 'text-amber-600 dark:text-amber-400' },
+          hard:          { badge: 'bg-orange-100 text-orange-800 dark:bg-orange-900/60 dark:text-orange-300', border: 'border-orange-200/80 dark:border-orange-800/60', avg: 'text-orange-600 dark:text-orange-400' },
+          impossible:    { badge: 'bg-rose-100 text-rose-800 dark:bg-rose-900/60 dark:text-rose-300', border: 'border-rose-200 dark:border-rose-800/70', avg: 'text-rose-600 dark:text-rose-400' },
+          empty:         { badge: 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300', border: 'border-slate-200 dark:border-slate-800', avg: 'text-slate-500' }
+        };
+
+        const isCustomFocused = document.activeElement && document.activeElement.id === 'customTargetInput';
+        const container = document.getElementById('targetCardsGrid');
+
+        container.innerHTML = targets.map(t => {
+          const res = analyzeTarget(t.gpa, a);
+          const st = styles[res.status] || styles.empty;
+
+          const headerRight = t.isCustom
+            ? `<input id="customTargetInput" type="number" min="1.0" max="4.0" step="0.05" value="${t.gpa.toFixed(2)}" aria-label="Mốc GPA tùy chỉnh"
+                 class="w-20 px-2 py-1 text-right text-sm font-extrabold rounded-lg bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-300 dark:border-indigo-700 text-indigo-700 dark:text-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 tabular-nums" />`
+            : `<span class="text-lg font-extrabold text-slate-900 dark:text-white tabular-nums">${t.gpa.toFixed(2)}</span>`;
+
+          const avgDisplay = res.neededAvg === null
+            ? '—'
+            : res.status === 'achieved'
+              ? '≤ 1.00'
+              : res.neededAvg.toFixed(2);
+
+          let retakeHtml = '';
+          if (res.status === 'impossible' && res.retake && res.retake.picks.length > 0) {
+            const top = res.retake.picks.slice(0, 4);
+            const rest = res.retake.picks.length - top.length;
+            retakeHtml = `
+              <div class="mt-2.5 p-2.5 rounded-xl bg-rose-50/80 dark:bg-rose-950/40 border border-rose-200/70 dark:border-rose-800/60 text-[11px] text-rose-800 dark:text-rose-200 space-y-1">
+                <div class="font-bold">Cần học cải thiện ${res.retake.totalCredits} TC (${res.retake.picks.length} môn) lên A:</div>
+                <ul class="space-y-0.5">
+                  ${top.map(p => `<li class="flex justify-between gap-1.5"><span class="truncate">• <strong>${escapeHtml(p.name)}</strong> (${p.fromLetter}→A, ${p.credits}TC)</span><span class="shrink-0 font-semibold">+${p.gain.toFixed(1)}đ</span></li>`).join('')}
+                  ${rest > 0 ? `<li class="italic opacity-80">+ và ${rest} môn điểm thấp khác...</li>` : ''}
+                </ul>
+              </div>`;
+          }
+
+          return `
+            <div class="rounded-2xl bg-slate-50/70 dark:bg-slate-800/40 border ${st.border} p-4 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between gap-2 mb-2">
+                  <span class="text-sm font-bold text-slate-800 dark:text-slate-100">${t.title}</span>
+                  ${headerRight}
+                </div>
+                <div class="mb-3">
+                  <span class="inline-block px-2.5 py-0.5 text-[11px] font-bold rounded-full ${st.badge}">
+                    ${res.statusLabel}
+                  </span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 py-2.5 border-y border-slate-200/70 dark:border-slate-700/70 text-xs">
+                  <div>
+                    <div class="text-slate-500 dark:text-slate-400 text-[11px]">Điểm tích lũy thiếu</div>
+                    <div class="font-bold text-slate-900 dark:text-white mt-0.5 tabular-nums">${res.neededPoints.toFixed(1)} <span class="font-normal text-[10px] text-slate-400">đ</span></div>
+                  </div>
+                  <div>
+                    <div class="text-slate-500 dark:text-slate-400 text-[11px]">GPA TB còn lại</div>
+                    <div class="font-extrabold text-base mt-0.5 tabular-nums ${st.avg}">${avgDisplay}<span class="text-[11px] font-normal text-slate-400">/4.0</span></div>
+                  </div>
+                </div>
+
+                <p class="mt-2.5 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                  ${escapeHtml(res.combo)}
+                </p>
+                ${retakeHtml}
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        const customInput = document.getElementById('customTargetInput');
+        if (customInput) {
+          if (isCustomFocused) { customInput.focus(); }
+          customInput.addEventListener('change', (e) => {
+            let val = parseFloat(e.target.value);
+            if (Number.isNaN(val)) val = 3.40;
+            state.customTargetGpa = Math.max(1.0, Math.min(4.0, Math.round(val * 100) / 100));
+            saveState();
+            renderTargetPlanner(computeAnalytics());
+          });
+        }
+      }
+
+      /** Biểu đồ GPA theo từng học kỳ (Pure SVG) */
+      function renderSemesterChart(a) {
+        const container = document.getElementById('semesterChartContainer');
+        const W = 560, H = 225;
+        const padL = 36, padR = 28, padT = 20, padB = 34;
+        const chartW = W - padL - padR;
+        const chartH = H - padT - padB;
+        const yPos = (val) => padT + chartH - (Math.max(0, Math.min(4, val)) / 4) * chartH;
+
+        const slotW = chartW / 8;
+        const barW = Math.min(34, slotW * 0.52);
+
+        const gridSvg = [0, 1, 2, 3, 4].map(v => {
+          const y = yPos(v);
+          return `
+            <line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="currentColor" class="text-slate-200 dark:text-slate-800" stroke-width="1" />
+            <text x="${padL - 8}" y="${y + 4}" text-anchor="end" class="fill-slate-400 text-[10px] font-medium">${v.toFixed(1)}</text>
+          `;
+        }).join('');
+
+        const refLines = [
+          { val: 3.6, color: '#10b981', label: '3.6' },
+          { val: 3.2, color: '#0ea5e9', label: '3.2' },
+          { val: 2.5, color: '#f59e0b', label: '2.5' }
+        ].map(r => {
+          const y = yPos(r.val);
+          return `
+            <line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="${r.color}" stroke-width="1.3" stroke-dasharray="4 4" opacity="0.85" />
+            <text x="${W - padR + 4}" y="${y + 3}" fill="${r.color}" class="text-[9px] font-bold">${r.label}</text>
+          `;
+        }).join('');
+
+        const linePoints = [];
+        let barsSvg = '';
+        for (let s = 1; s <= 8; s++) {
+          const sem = a.semesters[s];
+          const cx = padL + (s - 1) * slotW + slotW / 2;
+          const x = cx - barW / 2;
+          const labelX = `<text x="${cx}" y="${H - 12}" text-anchor="middle" class="fill-slate-500 dark:fill-slate-400 text-[11px] font-semibold">HK${s}</text>`;
+
+          if (sem.gpa4 === null) {
+            barsSvg += `<rect x="${x}" y="${yPos(0) - 4}" width="${barW}" height="4" rx="2" class="fill-slate-200 dark:fill-slate-800" />${labelX}`;
+            continue;
+          }
+
+          const y = yPos(sem.gpa4);
+          const h = Math.max(4, yPos(0) - y);
+          linePoints.push({ cx, y });
+
+          let barColor = '#6366f1';
+          if (sem.gpa4 >= 3.6) barColor = '#10b981';
+          else if (sem.gpa4 >= 3.2) barColor = '#0ea5e9';
+          else if (sem.gpa4 >= 2.5) barColor = '#f59e0b';
+          else if (sem.gpa4 < 2.0) barColor = '#f43f5e';
+
+          barsSvg += `
+            <g>
+              <rect x="${x}" y="${y}" width="${barW}" height="${h}" rx="6" fill="${barColor}" opacity="0.82" />
+              <text x="${cx}" y="${Math.max(12, y - 6)}" text-anchor="middle" class="fill-slate-800 dark:fill-slate-100 text-[10px] font-bold">${sem.gpa4.toFixed(2)}</text>
+              ${labelX}
+            </g>`;
+        }
+
+        let trendSvg = '';
+        if (linePoints.length >= 2) {
+          const d = linePoints.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.cx.toFixed(1)} ${p.y.toFixed(1)}`).join(' ');
+          trendSvg = `
+            <path d="${d}" fill="none" stroke="#4f46e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.7" />
+            ${linePoints.map(p => `<circle cx="${p.cx}" cy="${p.y}" r="3.5" fill="#ffffff" stroke="#4f46e5" stroke-width="2" />`).join('')}
+          `;
+        } else if (linePoints.length === 1) {
+          trendSvg = `<circle cx="${linePoints[0].cx}" cy="${linePoints[0].y}" r="3.5" fill="#ffffff" stroke="#4f46e5" stroke-width="2" />`;
+        }
+
+        const emptyText = linePoints.length === 0
+          ? `<text x="${W / 2}" y="${H / 2 - 4}" text-anchor="middle" class="fill-slate-400 dark:fill-slate-500 text-xs font-medium">Nhập điểm các học phần bên dưới để xem biểu đồ học kỳ</text>`
+          : '';
+
+        container.innerHTML = `
+          <svg viewBox="0 0 ${W} ${H}" class="w-full h-auto max-h-[250px] overflow-visible" role="img" aria-label="Biểu đồ GPA từng học kỳ">
+            ${gridSvg}
+            ${barsSvg}
+            ${refLines}
+            ${trendSvg}
+            ${emptyText}
+          </svg>`;
+      }
+
+      /** Biểu đồ phân bố điểm chữ (Pure CSS) */
+      function renderGradeDistribution(a) {
+        const container = document.getElementById('gradeDistContainer');
+        if (a.scoredGpaCredits === 0) {
+          container.innerHTML = `<div class="py-10 text-center text-xs text-slate-400 dark:text-slate-500">Chưa có môn tính GPA nào được nhập điểm.</div>`;
+          return;
+        }
+        const maxCredits = Math.max(1, ...HCMUE_SCALE.map(g => a.dist[g.letter].credits));
+        container.innerHTML = HCMUE_SCALE.map(g => {
+          const info = a.dist[g.letter];
+          const pct = Math.round((info.credits / a.scoredGpaCredits) * 100);
+          const barW = Math.round((info.credits / maxCredits) * 100);
+          return `
+            <div class="flex items-center gap-2.5 text-xs ${info.count === 0 ? 'opacity-40' : ''}">
+              <span class="w-7 text-center py-0.5 rounded-md font-bold shrink-0 ${g.badge}">${g.letter}</span>
+              <div class="flex-1 h-2.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                <div class="h-full ${g.bar} rounded-full transition-all duration-300" style="width: ${barW}%"></div>
+              </div>
+              <div class="w-28 sm:w-32 text-right shrink-0 text-[11px] text-slate-600 dark:text-slate-300 tabular-nums">
+                <strong>${info.count}</strong> môn • <strong>${info.credits}</strong> TC <span class="text-slate-400">(${pct}%)</span>
+              </div>
+            </div>`;
+        }).join('');
+      }
+
+      function renderSemesterTabs() {
+        const container = document.getElementById('semesterTabs');
+        const tabs = [{ val: 'all', label: 'Tất cả (8 HK)' }];
+        for (let s = 1; s <= 8; s++) tabs.push({ val: String(s), label: `HK ${s}` });
+
+        container.innerHTML = tabs.map(t => {
+          const active = String(state.selectedSemester) === t.val;
+          const cls = active
+            ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-500/20'
+            : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700';
+          return `<button type="button" data-sem-tab="${t.val}" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition ${cls}">${t.label}</button>`;
+        }).join('');
+      }
+
+      /** Render 8 học kỳ tính GPA */
+      function renderSemestersList(a) {
+        const container = document.getElementById('semestersContainer');
+        const q = state.searchQuery.trim().toLowerCase();
+        const semestersToShow = state.selectedSemester === 'all'
+          ? [1, 2, 3, 4, 5, 6, 7, 8]
+          : [Number(state.selectedSemester)];
+
+        let visibleTotal = 0;
+
+        const html = semestersToShow.map(semNum => {
+          const list = state.courses.filter(c => c.semester === semNum).filter(c => {
+            if (q && !c.code.toLowerCase().includes(q) && !c.name.toLowerCase().includes(q)) return false;
+            if (state.statusFilter === 'scored') return c.score10 !== null || Boolean(c.letter);
+            if (state.statusFilter === 'unscored') return c.score10 === null && !c.letter;
+            if (state.statusFilter === 'has-comp') return evaluateComponents(c).anyScoreEntered;
+            if (state.statusFilter === 'simulated') return c.isSimulated;
+            return true;
+          });
+
+          if (list.length === 0 && state.selectedSemester === 'all' && (q || state.statusFilter !== 'all')) {
+            return '';
+          }
+
+          visibleTotal += list.length;
+          const semStat = a.semesters[semNum];
+          const semGpaHtml = semStat.gpa4 !== null
+            ? `<span id="semGpaBadge_${semNum}" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-indigo-50 dark:bg-indigo-950/70 text-indigo-700 dark:text-indigo-300 border border-indigo-200/70 dark:border-indigo-800 tabular-nums">
+                 GPA HK: ${semStat.gpa4.toFixed(2)} <span class="font-normal opacity-75">(${semStat.gpa10.toFixed(1)}/10)</span>
+               </span>`
+            : `<span id="semGpaBadge_${semNum}" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">Chưa có điểm</span>`;
+
+          return `
+            <div class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden">
+              <div class="px-4 sm:px-5 py-3.5 bg-slate-50/90 dark:bg-slate-800/50 border-b border-slate-200/80 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2.5">
+                <div class="flex flex-wrap items-center gap-2.5">
+                  <h3 class="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white">Học kỳ ${semNum}</h3>
+                  <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">${semStat.totalGpaCredits} TC tính GPA</span>
+                  ${semGpaHtml}
+                </div>
+                <button type="button" data-add-sem="${semNum}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-semibold bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800/80 hover:bg-indigo-50 dark:hover:bg-indigo-950/60 transition">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                  Thêm môn
+                </button>
+              </div>
+
+              <div class="divide-y divide-slate-100 dark:divide-slate-800/80">
+                ${list.length > 0
+                  ? list.map(c => renderCourseItem(c)).join('')
+                  : `<div class="p-8 text-center text-sm text-slate-400 dark:text-slate-500">Không có học phần nào trong học kỳ này.</div>`
+                }
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        if (visibleTotal === 0 && (q || state.statusFilter !== 'all')) {
+          container.innerHTML = `
+            <div class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-10 text-center space-y-2.5">
+              <div class="text-slate-500 dark:text-slate-400 text-sm font-medium">Không tìm thấy học phần nào khớp bộ lọc hiện tại.</div>
+              <button id="resetFiltersBtn" type="button" class="inline-flex px-4 py-2 rounded-xl text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-300 hover:bg-indigo-100 transition">Xóa bộ lọc</button>
+            </div>`;
+          const btn = document.getElementById('resetFiltersBtn');
+          if (btn) {
+            btn.addEventListener('click', () => {
+              state.searchQuery = '';
+              state.statusFilter = 'all';
+              state.selectedSemester = 'all';
+              document.getElementById('searchInput').value = '';
+              document.getElementById('statusFilter').value = 'all';
+              document.getElementById('clearSearchBtn').classList.add('hidden');
+              renderAll();
+            });
+          }
+          return;
+        }
+
+        container.innerHTML = html;
+      }
+
+      /** Render 1 môn học tính GPA (bao gồm dòng chính + khung mở rộng "Thành phần & Hệ số") */
+      function renderCourseItem(c) {
+        const ev = evaluateComponents(c);
+        const gradeObj = getCourseGrades(c);
+        const isExpanded = Boolean(state.expandedCourseIds[c.id]);
+        const isSimExcluded = c.isSimulated && !state.includeSimulated;
+
+        const val10 = c.score10 !== null ? c.score10.toFixed(1) : '';
+        const letterOpts = `<option value="">-- Chữ --</option>` + HCMUE_SCALE.map(g =>
+          `<option value="${g.letter}" ${c.letter === g.letter ? 'selected' : ''}>${g.letter} (${g.gpa4.toFixed(1)})</option>`
+        ).join('');
+
+        const simBtnCls = c.isSimulated
+          ? 'bg-violet-100 text-violet-800 dark:bg-violet-900/70 dark:text-violet-200 border-violet-300 dark:border-violet-700'
+          : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border-transparent hover:border-slate-300 dark:hover:border-slate-600';
+
+        const summaryBadgeCls = ev.anyScoreEntered
+          ? (ev.isWeightValid
+              ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300 border-indigo-200/70 dark:border-indigo-800/70'
+              : 'bg-amber-50 text-amber-800 dark:bg-amber-950/50 dark:text-amber-300 border-amber-300/70 dark:border-amber-800/70')
+          : 'bg-slate-100 text-slate-500 dark:bg-slate-800/80 dark:text-slate-400 border-slate-200/70 dark:border-slate-700/70';
+
+        const toggleBtnCls = isExpanded
+          ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm'
+          : 'bg-indigo-50/70 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border-indigo-200/80 dark:border-indigo-800/80 hover:bg-indigo-100 dark:hover:bg-indigo-900/50';
+
+        return `
+          <div class="${c.isSimulated ? 'bg-violet-50/40 dark:bg-violet-950/15' : ''} ${isSimExcluded ? 'opacity-65' : ''}" data-course-wrap="${escapeHtml(c.id)}">
+            <!-- Dòng chính của môn học -->
+            <div class="px-4 sm:px-5 py-3.5 flex flex-col lg:flex-row lg:items-center justify-between gap-3 hover:bg-slate-50/70 dark:hover:bg-slate-800/25 transition">
+              <!-- Cột trái: Thông tin môn + Badge thành phần -->
+              <div class="min-w-0 flex-1 space-y-1">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  ${c.code ? `<span class="font-mono text-xs font-bold text-indigo-600 dark:text-indigo-400">${escapeHtml(c.code)}</span>` : ''}
+                  <span class="px-2 py-0.5 text-[11px] font-bold rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">${c.credits} TC</span>
+                  <button type="button" data-action="toggle-sim" data-id="${escapeHtml(c.id)}" title="Bấm để chuyển giữa Chính thức và Dự kiến (What-if)"
+                    class="px-2 py-0.5 text-[10px] font-bold rounded-full border transition ${simBtnCls}">
+                    ${c.isSimulated ? 'Dự kiến' : 'Chính thức'}
+                  </button>
+                  <span id="compSummary_${escapeHtml(c.id)}" class="px-2 py-0.5 text-[11px] font-medium rounded-full border ${summaryBadgeCls} tabular-nums">
+                    ${escapeHtml(ev.summaryText)}
+                  </span>
+                  ${isSimExcluded ? '<span class="text-[10px] italic text-slate-400">(đang ẩn khỏi GPA)</span>' : ''}
+                </div>
+                <div class="font-semibold text-sm text-slate-900 dark:text-slate-100 leading-snug">
+                  ${escapeHtml(c.name)}
+                </div>
+              </div>
+
+              <!-- Cột phải: Nhập điểm nhanh + Nút mở Thành phần & Hệ số + Sửa/Xóa -->
+              <div class="flex flex-wrap sm:flex-nowrap items-center gap-2 shrink-0">
+                <!-- Ô nhập điểm hệ 10 -->
+                <input id="score10Input_${escapeHtml(c.id)}" type="number" min="0" max="10" step="0.1" value="${val10}" placeholder="Hệ 10"
+                  data-action="score10" data-id="${escapeHtml(c.id)}" aria-label="Điểm hệ 10 môn ${escapeHtml(c.name)}"
+                  class="w-20 sm:w-22 px-2.5 py-2 rounded-xl text-sm font-bold text-center bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500 transition tabular-nums" />
+
+                <!-- Dropdown điểm chữ đồng bộ 2 chiều -->
+                <select id="letterSelect_${escapeHtml(c.id)}" data-action="letter" data-id="${escapeHtml(c.id)}" aria-label="Điểm chữ môn ${escapeHtml(c.name)}"
+                  class="w-26 sm:w-28 px-2 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500 transition">
+                  ${letterOpts}
+                </select>
+
+                <!-- Badge hệ 4 -->
+                <span id="gpa4Badge_${escapeHtml(c.id)}" class="w-10 text-center py-1 rounded-lg text-xs font-extrabold shrink-0 tabular-nums ${gradeObj ? gradeObj.badge : 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500'}">
+                  ${gradeObj ? gradeObj.gpa4.toFixed(1) : '--'}
+                </span>
+
+                <!-- Nút mở rộng Thành phần & Hệ số -->
+                <button type="button" data-action="toggle-comp" data-id="${escapeHtml(c.id)}" aria-expanded="${isExpanded}"
+                  class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border transition ${toggleBtnCls}">
+                  <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+                  <span class="whitespace-nowrap">Thành phần &amp; Hệ số</span>
+                  <svg class="w-3.5 h-3.5 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+
+                <!-- Nút Sửa / Xóa môn -->
+                <div class="flex items-center gap-0.5 ml-auto sm:ml-0">
+                  <button type="button" data-action="edit-gpa-course" data-id="${escapeHtml(c.id)}" title="Sửa tên / tín chỉ / học kỳ" class="p-2 rounded-xl text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/50 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                  </button>
+                  <button type="button" data-action="delete-gpa-course" data-id="${escapeHtml(c.id)}" title="Xóa môn học" class="p-2 rounded-xl text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/50 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Khung mở rộng INLINE: Thành phần & Hệ số -->
+            ${isExpanded ? renderComponentPanel(c, ev) : ''}
+          </div>
+        `;
+      }
+
+      /** Render khung nhập chi tiết Điểm quá trình & Hệ số ngay bên dưới dòng môn học */
+      function renderComponentPanel(c, ev) {
+        const weightBadgeCls = ev.isWeightValid
+          ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800'
+          : 'bg-rose-100 text-rose-800 dark:bg-rose-900/60 dark:text-rose-300 border-rose-200 dark:border-rose-800';
+
+        const weightStatusText = ev.isWeightValid
+          ? `Tổng hệ số: 100% ✓`
+          : `Tổng hệ số: ${ev.totalWeight}% (Cần đúng 100%)`;
+
+        const activeRatio = c.components.map(col => parseWeightValue(col.weight)).join('/');
+
+        const presetButtonsHtml = Object.keys(WEIGHT_PRESETS).map(key => {
+          const isMatch = activeRatio === key;
+          const cls = isMatch
+            ? 'bg-indigo-600 text-white border-indigo-600'
+            : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-indigo-400';
+          return `<button type="button" data-action="apply-preset" data-id="${escapeHtml(c.id)}" data-preset="${key}" class="px-2.5 py-1 rounded-lg text-[11px] font-bold border transition">${key}</button>`;
+        }).join('');
+
+        const colsHtml = c.components.map((col, idx) => `
+          <div class="grid grid-cols-12 gap-2 items-center p-2.5 rounded-xl bg-white dark:bg-slate-900 border ${col.isFinal ? 'border-indigo-300/80 dark:border-indigo-700/80' : 'border-slate-200/80 dark:border-slate-700/80'}">
+            <!-- Tên cột điểm -->
+            <div class="col-span-12 sm:col-span-4">
+              <label class="block sm:hidden text-[10px] font-semibold text-slate-400 mb-0.5">Tên cột điểm</label>
+              <input type="text" value="${escapeHtml(col.name)}" placeholder="Tên cột (vd: Giữa kỳ)"
+                data-comp-field="name" data-id="${escapeHtml(c.id)}" data-col-id="${escapeHtml(col.id)}"
+                class="w-full px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/40" />
+            </div>
+
+            <!-- Hệ số (%) -->
+            <div class="col-span-5 sm:col-span-3">
+              <label class="block sm:hidden text-[10px] font-semibold text-slate-400 mb-0.5">Hệ số (%)</label>
+              <div class="relative">
+                <input type="number" min="0" max="100" step="1" value="${col.weight}" placeholder="%"
+                  data-comp-field="weight" data-id="${escapeHtml(c.id)}" data-col-id="${escapeHtml(col.id)}"
+                  class="w-full pl-2.5 pr-7 py-1.5 rounded-lg text-xs font-bold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 tabular-nums" />
+                <span class="absolute right-2.5 top-1/2 -translate-y-1/2 text-[11px] font-bold text-slate-400 pointer-events-none">%</span>
+              </div>
+            </div>
+
+            <!-- Điểm (0-10) -->
+            <div class="col-span-5 sm:col-span-2">
+              <label class="block sm:hidden text-[10px] font-semibold text-slate-400 mb-0.5">Điểm (0–10)</label>
+              <input type="number" min="0" max="10" step="0.1" value="${escapeHtml(col.score)}" placeholder="Trống"
+                data-comp-field="score" data-id="${escapeHtml(c.id)}" data-col-id="${escapeHtml(col.id)}"
+                class="w-full px-2.5 py-1.5 rounded-lg text-xs font-bold text-center bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 tabular-nums" />
+            </div>
+
+            <!-- Đánh dấu cột Cuối kỳ -->
+            <div class="col-span-10 sm:col-span-2 flex items-center sm:justify-center">
+              <label class="inline-flex items-center gap-1.5 cursor-pointer select-none text-[11px] font-semibold ${col.isFinal ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-500 dark:text-slate-400'}">
+                <input type="radio" name="finalCol_${escapeHtml(c.id)}" ${col.isFinal ? 'checked' : ''}
+                  data-action="set-final-col" data-id="${escapeHtml(c.id)}" data-col-id="${escapeHtml(col.id)}"
+                  class="w-3.5 h-3.5 text-indigo-600 border-slate-300 focus:ring-indigo-500" />
+                <span>Cuối kỳ</span>
+              </label>
+            </div>
+
+            <!-- Xóa cột -->
+            <div class="col-span-2 sm:col-span-1 flex justify-end">
+              <button type="button" data-action="remove-col" data-id="${escapeHtml(c.id)}" data-col-id="${escapeHtml(col.id)}"
+                ${c.components.length <= 1 ? 'disabled' : ''} title="Xóa cột điểm này"
+                class="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/50 disabled:opacity-30 disabled:cursor-not-allowed transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+              </button>
+            </div>
+          </div>
+        `).join('');
+
+        return `
+          <div id="compPanel_${escapeHtml(c.id)}" class="px-4 sm:px-5 pb-4 pt-3 bg-slate-50/90 dark:bg-slate-800/35 border-t border-slate-200/70 dark:border-slate-800 space-y-3 animate-fade-up">
+            <!-- Thanh chọn nhanh tỉ lệ + Kiểm tra tổng hệ số -->
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="flex flex-wrap items-center gap-1.5">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mr-1">Tỉ lệ nhanh:</span>
+                ${presetButtonsHtml}
+              </div>
+              <div class="flex items-center gap-2 flex-wrap">
+                <span id="weightStatus_${escapeHtml(c.id)}" class="px-2.5 py-1 rounded-lg text-xs font-bold border tabular-nums ${weightBadgeCls}">
+                  ${weightStatusText}
+                </span>
+                <button type="button" data-action="add-col" data-id="${escapeHtml(c.id)}" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white transition">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                  Thêm cột điểm
+                </button>
+                <button type="button" data-action="clear-comp-scores" data-id="${escapeHtml(c.id)}" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:text-rose-600 hover:border-rose-300 transition">
+                  Xóa điểm thành phần
+                </button>
+              </div>
+            </div>
+
+            <!-- Tiêu đề cột trên desktop -->
+            <div class="hidden sm:grid sm:grid-cols-12 gap-2 px-2.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+              <div class="col-span-4">Tên cột thành phần</div>
+              <div class="col-span-3">Hệ số (%)</div>
+              <div class="col-span-2 text-center">Điểm (0–10)</div>
+              <div class="col-span-2 text-center">Tính ngược</div>
+              <div class="col-span-1 text-right">Xóa</div>
+            </div>
+
+            <!-- Danh sách các cột điểm -->
+            <div class="space-y-2">
+              ${colsHtml}
+            </div>
+
+            <!-- Khu vực kết quả tự động & Bảng mini tính ngược điểm Cuối kỳ -->
+            <div id="compFeedback_${escapeHtml(c.id)}">
+              ${renderCompFeedbackHtml(c, ev)}
+            </div>
+          </div>
+        `;
+      }
+
+      /** Render nội dung kết quả tự động tính hoặc bảng mini điểm Cuối kỳ tối thiểu cần đạt */
+      function renderCompFeedbackHtml(c, ev) {
+        if (!ev.isWeightValid) {
+          return `
+            <div class="rounded-xl p-3 bg-amber-50 dark:bg-amber-950/35 border border-amber-200 dark:border-amber-800/70 text-xs text-amber-800 dark:text-amber-300 flex items-center gap-2">
+              <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+              <span>Tổng hệ số hiện tại là <strong>${ev.totalWeight}%</strong>. Hãy điều chỉnh sao cho tổng các cột bằng đúng <strong>100%</strong> để hệ thống tự động tính điểm tổng kết và tính ngược điểm Cuối kỳ.</span>
+            </div>`;
+        }
+
+        let autoCalcBanner = '';
+        if (ev.computedScore10 !== null) {
+          const g = score10ToGrade(ev.computedScore10);
+          autoCalcBanner = `
+            <div class="rounded-xl px-3.5 py-2.5 bg-emerald-50/80 dark:bg-emerald-950/35 border border-emerald-200 dark:border-emerald-800/70 flex flex-wrap items-center justify-between gap-2 text-xs">
+              <div class="text-emerald-900 dark:text-emerald-200">
+                Đã tự động tính tổng kết (làm tròn 0.1):
+                <strong class="text-sm ml-1 tabular-nums">${ev.computedScore10.toFixed(1)}</strong>
+                <span class="ml-1.5 px-2 py-0.5 rounded-md font-bold ${g.badge}">${g.letter} (${g.gpa4.toFixed(1)})</span>
+              </div>
+              <span class="text-[11px] text-emerald-700 dark:text-emerald-400">Đã đồng bộ lên bảng điểm &amp; GPA</span>
+            </div>`;
+        }
+
+        let reverseTable = '';
+        if (ev.canReverseCalc && ev.reverseTargets) {
+          const finalName = ev.finalCol ? ev.finalCol.name : 'Cuối kỳ';
+          const headingNote = ev.isFinalEmpty
+            ? `Bấm trực tiếp vào một mốc bên dưới để điền thử điểm <strong>${escapeHtml(finalName)}</strong> ở chế độ <strong>Dự kiến (What-if)</strong>:`
+            : `Tham khảo mức điểm <strong>${escapeHtml(finalName)}</strong> tối thiểu cho từng mốc (bấm để thử kịch bản <strong>Dự kiến</strong>):`;
+
+          reverseTable = `
+            <div class="rounded-xl p-3 bg-white dark:bg-slate-900 border border-indigo-200/80 dark:border-indigo-800/70 space-y-2.5">
+              <div class="flex flex-wrap items-center justify-between gap-1">
+                <div class="text-xs font-bold text-indigo-900 dark:text-indigo-200 flex items-center gap-1.5">
+                  <svg class="w-4 h-4 text-indigo-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                  Điểm ${escapeHtml(finalName)} (${ev.finalWeight}%) tối thiểu cần đạt
+                </div>
+                <span class="text-[11px] text-slate-500 dark:text-slate-400">${headingNote}</span>
+              </div>
+
+              <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+                ${ev.reverseTargets.map(m => {
+                  const isDisabled = m.status === 'impossible';
+                  let valHtml = '';
+                  if (m.status === 'impossible') {
+                    valHtml = `<span class="text-xs font-bold text-rose-500">Không thể</span>`;
+                  } else if (m.status === 'guaranteed') {
+                    valHtml = `<span class="text-xs font-bold text-emerald-600 dark:text-emerald-400">Đã chắc chắn</span>`;
+                  } else {
+                    valHtml = `<span class="text-sm font-extrabold text-indigo-700 dark:text-indigo-300 tabular-nums">≥ ${m.needed.toFixed(1)} đ</span>`;
+                  }
+
+                  return `
+                    <button type="button"
+                      ${isDisabled ? 'disabled' : `data-action="pick-reverse-target" data-id="${escapeHtml(c.id)}" data-ck="${m.needed.toFixed(1)}" data-letter="${m.letter}"`}
+                      class="text-left p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/60 transition flex flex-col justify-between ${isDisabled ? 'opacity-55 cursor-not-allowed' : `cursor-pointer ${m.ring}`}">
+                      <div class="flex items-center justify-between text-[11px]">
+                        <span class="font-extrabold text-slate-800 dark:text-slate-100">Đạt ${m.letter}</span>
+                        <span class="text-slate-400">${m.min10.toFixed(1)}</span>
+                      </div>
+                      <div class="mt-1">${valHtml}</div>
+                    </button>
+                  `;
+                }).join('')}
+              </div>
+            </div>`;
+        } else if (!ev.anyScoreEntered) {
+          reverseTable = `
+            <div class="text-[11px] text-slate-500 dark:text-slate-400 italic px-1">
+              Nhập điểm các cột quá trình để xem ngay bảng điểm Cuối kỳ tối thiểu cần đạt cho từng mốc A, B+, B, C+, C, D.
+            </div>`;
+        }
+
+        return `<div class="space-y-2.5">${autoCalcBanner}${reverseTable}</div>`;
+      }
+
+      /** Cập nhật in-place các phần tử của 1 môn học khi người dùng đang gõ điểm/hệ số (giữ nguyên focus) */
+      function updateCourseVisualsInPlace(c, ev) {
+        const gradeObj = getCourseGrades(c);
+
+        // 1. Badge tóm tắt thành phần
+        const summaryEl = document.getElementById(`compSummary_${c.id}`);
+        if (summaryEl) {
+          summaryEl.textContent = ev.summaryText;
+          summaryEl.className = `px-2 py-0.5 text-[11px] font-medium rounded-full border tabular-nums ${
+            ev.anyScoreEntered
+              ? (ev.isWeightValid
+                  ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300 border-indigo-200/70 dark:border-indigo-800/70'
+                  : 'bg-amber-50 text-amber-800 dark:bg-amber-950/50 dark:text-amber-300 border-amber-300/70 dark:border-amber-800/70')
+              : 'bg-slate-100 text-slate-500 dark:bg-slate-800/80 dark:text-slate-400 border-slate-200/70 dark:border-slate-700/70'
+          }`;
+        }
+
+        // 2. Ô điểm hệ 10, dropdown điểm chữ, badge hệ 4
+        const s10El = document.getElementById(`score10Input_${c.id}`);
+        if (s10El && document.activeElement !== s10El) {
+          s10El.value = c.score10 !== null ? c.score10.toFixed(1) : '';
+        }
+        const letEl = document.getElementById(`letterSelect_${c.id}`);
+        if (letEl && document.activeElement !== letEl) {
+          letEl.value = c.letter || '';
+        }
+        const gpa4El = document.getElementById(`gpa4Badge_${c.id}`);
+        if (gpa4El) {
+          gpa4El.textContent = gradeObj ? gradeObj.gpa4.toFixed(1) : '--';
+          gpa4El.className = `w-10 text-center py-1 rounded-lg text-xs font-extrabold shrink-0 tabular-nums ${
+            gradeObj ? gradeObj.badge : 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500'
+          }`;
+        }
+
+        // 3. Trạng thái tổng hệ số (%) trong panel
+        const wsEl = document.getElementById(`weightStatus_${c.id}`);
+        if (wsEl) {
+          wsEl.textContent = ev.isWeightValid ? 'Tổng hệ số: 100% ✓' : `Tổng hệ số: ${ev.totalWeight}% (Cần đúng 100%)`;
+          wsEl.className = `px-2.5 py-1 rounded-lg text-xs font-bold border tabular-nums ${
+            ev.isWeightValid
+              ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800'
+              : 'bg-rose-100 text-rose-800 dark:bg-rose-900/60 dark:text-rose-300 border-rose-200 dark:border-rose-800'
+          }`;
+        }
+
+        // 4. Bảng kết quả tự động & tính ngược điểm Cuối kỳ
+        const fbEl = document.getElementById(`compFeedback_${c.id}`);
+        if (fbEl) {
+          fbEl.innerHTML = renderCompFeedbackHtml(c, ev);
+        }
+      }
+
+      /** Render khu vực riêng: Học phần điều kiện (GDQP 8 TC & GDTC 6 TC) */
+      function renderConditionalSection() {
+        const container = document.getElementById('conditionalContainer');
+        const groups = [
+          { key: 'gdqp', title: 'Giáo dục Quốc phòng & An ninh', badgeCls: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300' },
+          { key: 'gdtc', title: 'Giáo dục Thể chất',              badgeCls: 'bg-sky-100 text-sky-800 dark:bg-sky-900/50 dark:text-sky-300' }
+        ];
+
+        container.innerHTML = groups.map(grp => {
+          const items = state.condCourses.filter(c => c.group === grp.key);
+          const totalTc = items.reduce((s, c) => s + c.credits, 0);
+          const passTc = items.filter(c => c.status === 'pass').reduce((s, c) => s + c.credits, 0);
+
+          const rows = items.length > 0 ? items.map(c => `
+            <div class="p-3 rounded-xl bg-slate-50/80 dark:bg-slate-800/40 border border-slate-200/70 dark:border-slate-700/70 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+              <div class="min-w-0">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  ${c.code ? `<span class="font-mono text-[11px] font-bold text-amber-700 dark:text-amber-400">${escapeHtml(c.code)}</span>` : ''}
+                  <span class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-slate-200/80 dark:bg-slate-700 text-slate-700 dark:text-slate-200">${c.credits} TC</span>
+                </div>
+                <div class="text-xs sm:text-sm font-semibold text-slate-900 dark:text-slate-100 mt-0.5">${escapeHtml(c.name)}</div>
+              </div>
+
+              <div class="flex items-center gap-1.5 shrink-0">
+                <div class="inline-flex rounded-xl p-0.5 bg-slate-200/70 dark:bg-slate-900 border border-slate-200 dark:border-slate-700">
+                  <button type="button" data-action="set-cond-status" data-id="${escapeHtml(c.id)}" data-status="pending"
+                    class="px-2.5 py-1 rounded-lg text-[11px] font-bold transition ${c.status === 'pending' ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400'}">Chưa học</button>
+                  <button type="button" data-action="set-cond-status" data-id="${escapeHtml(c.id)}" data-status="pass"
+                    class="px-2.5 py-1 rounded-lg text-[11px] font-bold transition ${c.status === 'pass' ? 'bg-emerald-600 text-white shadow-sm' : 'text-slate-500 hover:text-emerald-600 dark:text-slate-400'}">Đạt</button>
+                  <button type="button" data-action="set-cond-status" data-id="${escapeHtml(c.id)}" data-status="fail"
+                    class="px-2.5 py-1 rounded-lg text-[11px] font-bold transition ${c.status === 'fail' ? 'bg-rose-600 text-white shadow-sm' : 'text-slate-500 hover:text-rose-600 dark:text-slate-400'}">Chưa đạt</button>
+                </div>
+
+                <button type="button" data-action="edit-cond-course" data-id="${escapeHtml(c.id)}" title="Sửa học phần điều kiện" class="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-950/50 transition">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                </button>
+                <button type="button" data-action="delete-cond-course" data-id="${escapeHtml(c.id)}" title="Xóa học phần điều kiện" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/50 transition">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                </button>
+              </div>
+            </div>
+          `).join('') : `<div class="p-6 text-center text-xs text-slate-400">Chưa có học phần nào trong nhóm này.</div>`;
+
+          return `
+            <div class="rounded-2xl border border-slate-200/80 dark:border-slate-800 p-4 space-y-3 bg-white dark:bg-slate-900">
+              <div class="flex items-center justify-between gap-2 pb-2 border-b border-slate-100 dark:border-slate-800">
+                <h3 class="text-sm font-extrabold text-slate-900 dark:text-white">${grp.title}</h3>
+                <span class="px-2.5 py-0.5 text-xs font-bold rounded-full tabular-nums ${grp.badgeCls}">
+                  ${passTc}/${totalTc} TC Đạt
+                </span>
+              </div>
+              <div class="space-y-2.5">${rows}</div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // =========================================================================
+      // 7. MODAL, TOAST, DARK MODE & SAO LƯU JSON
+      // =========================================================================
+
+      function openModal(id) { document.getElementById(id)?.classList.remove('hidden'); }
+      function closeModal(id) { document.getElementById(id)?.classList.add('hidden'); }
+
+      function showConfirm(title, message, onConfirm) {
+        document.getElementById('confirmTitle').textContent = title;
+        document.getElementById('confirmMessage').textContent = message;
+        confirmCallback = onConfirm;
+        openModal('confirmModal');
+      }
+
+      function showToast(message, type = 'success') {
+        const container = document.getElementById('toastContainer');
+        const colors = {
+          success: 'bg-slate-900 dark:bg-emerald-600 text-white',
+          info:    'bg-indigo-600 text-white',
+          error:   'bg-rose-600 text-white'
+        };
+        const toast = document.createElement('div');
+        toast.className = `pointer-events-auto px-4 py-2.5 rounded-xl shadow-lg text-xs sm:text-sm font-medium animate-fade-up ${colors[type] || colors.success}`;
+        toast.textContent = message;
+        container.appendChild(toast);
+        setTimeout(() => {
+          toast.style.opacity = '0';
+          toast.style.transition = 'opacity 0.25s ease';
+          setTimeout(() => toast.remove(), 260);
+        }, 2600);
+      }
+
+      function applyTheme() {
+        const isDark = state.theme === 'dark' ||
+          (state.theme === 'system' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.classList.toggle('dark', isDark);
+      }
+
+      function toggleTheme() {
+        state.theme = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
+        applyTheme();
+        saveState();
+      }
+
+      function setFormKindUi(kind) {
+        document.getElementById('formCourseKind').value = kind;
+        const btnGpa = document.getElementById('kindBtnGpa');
+        const btnCond = document.getElementById('kindBtnCond');
+        const semWrap = document.getElementById('formSemesterWrap');
+        const condWrap = document.getElementById('formCondGroupWrap');
+
+        if (kind === 'cond') {
+          btnCond.className = 'py-2 rounded-lg text-xs font-bold transition bg-white dark:bg-slate-900 text-amber-700 dark:text-amber-300 shadow-sm';
+          btnGpa.className = 'py-2 rounded-lg text-xs font-bold transition text-slate-500 dark:text-slate-400';
+          semWrap.classList.add('hidden');
+          condWrap.classList.remove('hidden');
+        } else {
+          btnGpa.className = 'py-2 rounded-lg text-xs font-bold transition bg-white dark:bg-slate-900 text-indigo-700 dark:text-indigo-300 shadow-sm';
+          btnCond.className = 'py-2 rounded-lg text-xs font-bold transition text-slate-500 dark:text-slate-400';
+          semWrap.classList.remove('hidden');
+          condWrap.classList.add('hidden');
+        }
+      }
+
+      function openCourseModal({ mode = 'add', kind = 'gpa', course = null, defaultSemester = null }) {
+        const title = document.getElementById('courseModalTitle');
+        const idEl = document.getElementById('formCourseId');
+        const codeEl = document.getElementById('formCourseCode');
+        const nameEl = document.getElementById('formCourseName');
+        const credEl = document.getElementById('formCourseCredits');
+        const semEl = document.getElementById('formCourseSemester');
+        const grpEl = document.getElementById('formCondGroup');
+
+        setFormKindUi(kind);
+
+        if (mode === 'edit' && course) {
+          title.textContent = kind === 'cond' ? 'Chỉnh sửa học phần điều kiện' : 'Chỉnh sửa học phần';
+          idEl.value = course.id;
+          codeEl.value = course.code || '';
+          nameEl.value = course.name || '';
+          credEl.value = course.credits || 2;
+          if (kind === 'cond') {
+            grpEl.value = course.group || 'gdqp';
+          } else {
+            semEl.value = String(course.semester || 1);
+          }
+        } else {
+          title.textContent = kind === 'cond' ? 'Thêm học phần điều kiện' : 'Thêm học phần mới';
+          idEl.value = '';
+          codeEl.value = '';
+          nameEl.value = '';
+          credEl.value = kind === 'cond' ? 2 : 3;
+          semEl.value = String(defaultSemester || (state.selectedSemester !== 'all' ? state.selectedSemester : 1));
+          grpEl.value = 'gdqp';
+        }
+        openModal('courseFormModal');
+        setTimeout(() => nameEl.focus(), 50);
+      }
+
+      function exportJsonData() {
+        try {
+          const data = {
+            app: 'HCMUE_SPTH_GPA_PLANNER',
+            version: 2,
+            exportedAt: new Date().toISOString(),
+            includeSimulated: state.includeSimulated,
+            customTargetGpa: state.customTargetGpa,
+            courses: state.courses,
+            condCourses: state.condCourses
+          };
+          const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `hcmue-spth-gpa-${new Date().toISOString().slice(0, 10)}.json`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+          showToast('Đã xuất file sao lưu JSON thành công!');
+        } catch (err) {
+          console.error(err);
+          showToast('Không thể xuất file sao lưu.', 'error');
+        }
+      }
+
+      function handleImportJson(file) {
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          try {
+            const parsed = JSON.parse(ev.target.result);
+            if (!parsed || !Array.isArray(parsed.courses)) {
+              showToast('File JSON không đúng định dạng.', 'error');
+              return;
+            }
+            // Hỗ trợ cả cấu trúc v2 (courses + condCourses) và v1 (courses trộn countGpa)
+            if (Array.isArray(parsed.condCourses)) {
+              state.courses = parsed.courses.map(normalizeGpaCourse);
+              state.condCourses = parsed.condCourses.map(normalizeCondCourse);
+            } else {
+              state.courses = parsed.courses.filter(c => c.countGpa !== false).map(normalizeGpaCourse);
+              const importedCond = parsed.courses.filter(c => c.countGpa === false).map(normalizeCondCourse);
+              state.condCourses = importedCond.length > 0 ? importedCond : buildDefaultCondCourses();
+            }
+            if (typeof parsed.includeSimulated === 'boolean') state.includeSimulated = parsed.includeSimulated;
+            if (typeof parsed.customTargetGpa === 'number') state.customTargetGpa = Math.max(1, Math.min(4, parsed.customTargetGpa));
+            state.expandedCourseIds = {};
+            saveState();
+            renderAll();
+            showToast(`Đã nhập ${state.courses.length} môn GPA và ${state.condCourses.length} học phần điều kiện!`);
+          } catch (err) {
+            console.error(err);
+            showToast('Lỗi đọc file JSON. Vui lòng kiểm tra lại.', 'error');
+          }
+        };
+        reader.readAsText(file);
+      }
+
+      // =========================================================================
+      // 8. GẮN SỰ KIỆN (EVENT LISTENERS)
+      // =========================================================================
+
+      function bindEvents() {
+        // Dark / Light mode
+        document.getElementById('themeToggleDesktop').addEventListener('click', toggleTheme);
+        document.getElementById('themeToggleMobile').addEventListener('click', toggleTheme);
+
+        // Công tắc What-if toàn cục
+        document.getElementById('includeSimToggle').addEventListener('change', (e) => {
+          state.includeSimulated = e.target.checked;
+          saveState();
+          renderAll();
+        });
+        document.getElementById('disableSimBannerBtn').addEventListener('click', () => {
+          state.includeSimulated = false;
+          saveState();
+          renderAll();
+        });
+
+        // Tra cứu thang điểm
+        document.getElementById('openScaleModalBtn').addEventListener('click', () => openModal('scaleModal'));
+
+        // Xuất / Nhập JSON
+        document.getElementById('exportJsonBtn').addEventListener('click', exportJsonData);
+        const fileInput = document.getElementById('importFileInput');
+        document.getElementById('importJsonBtn').addEventListener('click', () => {
+          fileInput.value = '';
+          fileInput.click();
+        });
+        fileInput.addEventListener('change', (e) => handleImportJson(e.target.files[0]));
+
+        // Dropdown Khôi phục
+        const resetBtn = document.getElementById('resetMenuBtn');
+        const resetDropdown = document.getElementById('resetDropdown');
+        resetBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          resetDropdown.classList.toggle('hidden');
+        });
+        document.addEventListener('click', (e) => {
+          if (!resetDropdown.contains(e.target) && !resetBtn.contains(e.target)) {
+            resetDropdown.classList.add('hidden');
+          }
+        });
+
+        document.getElementById('clearScoresBtn').addEventListener('click', () => {
+          resetDropdown.classList.add('hidden');
+          showConfirm(
+            'Xóa toàn bộ điểm đã nhập?',
+            'Điểm tổng kết, điểm quá trình và trạng thái học phần điều kiện sẽ được đặt về trống. Danh sách môn học vẫn giữ nguyên.',
+            () => {
+              state.courses.forEach(c => {
+                c.score10 = null;
+                c.letter = '';
+                c.isSimulated = false;
+                c.components.forEach(col => { col.score = ''; });
+              });
+              state.condCourses.forEach(c => { c.status = 'pending'; });
+              saveState();
+              renderAll();
+              showToast('Đã xóa toàn bộ điểm đã nhập.', 'info');
+            }
+          );
+        });
+
+        document.getElementById('restoreCurriculumBtn').addEventListener('click', () => {
+          resetDropdown.classList.add('hidden');
+          showConfirm(
+            'Khôi phục CTDT mặc định (130 TC + 14 TC ĐK)?',
+            'Toàn bộ 8 học kỳ và khu vực GDQP/GDTC ngành Sư phạm Tin học HCMUE sẽ được đặt lại về chuẩn ban đầu.',
+            () => {
+              state.courses = buildDefaultGpaCourses();
+              state.condCourses = buildDefaultCondCourses();
+              state.expandedCourseIds = {};
+              state.selectedSemester = 'all';
+              state.searchQuery = '';
+              state.statusFilter = 'all';
+              document.getElementById('searchInput').value = '';
+              document.getElementById('statusFilter').value = 'all';
+              document.getElementById('clearSearchBtn').classList.add('hidden');
+              saveState();
+              renderAll();
+              showToast('Đã khôi phục chương trình đào tạo chuẩn!');
+            }
+          );
+        });
+
+        // Tìm kiếm & lọc
+        const searchInput = document.getElementById('searchInput');
+        const clearSearchBtn = document.getElementById('clearSearchBtn');
+        searchInput.addEventListener('input', (e) => {
+          state.searchQuery = e.target.value;
+          clearSearchBtn.classList.toggle('hidden', !state.searchQuery);
+          renderSemestersList(computeAnalytics());
+        });
+        clearSearchBtn.addEventListener('click', () => {
+          state.searchQuery = '';
+          searchInput.value = '';
+          clearSearchBtn.classList.add('hidden');
+          renderSemestersList(computeAnalytics());
+        });
+        document.getElementById('statusFilter').addEventListener('change', (e) => {
+          state.statusFilter = e.target.value;
+          renderSemestersList(computeAnalytics());
+        });
+
+        // Tabs học kỳ
+        document.getElementById('semesterTabs').addEventListener('click', (e) => {
+          const btn = e.target.closest('[data-sem-tab]');
+          if (!btn) return;
+          state.selectedSemester = btn.getAttribute('data-sem-tab');
+          renderSemesterTabs();
+          renderSemestersList(computeAnalytics());
+        });
+
+        // Nút mở modal Thêm môn học
+        document.getElementById('addCourseGlobalBtn').addEventListener('click', () => {
+          openCourseModal({ mode: 'add', kind: 'gpa' });
+        });
+        document.getElementById('addCondCourseBtn').addEventListener('click', () => {
+          openCourseModal({ mode: 'add', kind: 'cond' });
+        });
+        document.getElementById('kindBtnGpa').addEventListener('click', () => setFormKindUi('gpa'));
+        document.getElementById('kindBtnCond').addEventListener('click', () => setFormKindUi('cond'));
+
+        // Submit form Thêm / Sửa môn học
+        document.getElementById('courseForm').addEventListener('submit', (e) => {
+          e.preventDefault();
+          const id = document.getElementById('formCourseId').value;
+          const kind = document.getElementById('formCourseKind').value;
+          const code = document.getElementById('formCourseCode').value.trim().toUpperCase();
+          const name = document.getElementById('formCourseName').value.trim();
+          const credits = Math.max(1, Math.min(15, parseInt(document.getElementById('formCourseCredits').value, 10) || 2));
+          if (!name) return;
+
+          if (kind === 'cond') {
+            const group = document.getElementById('formCondGroup').value;
+            if (id) {
+              // Xử lý cả trường hợp chuyển môn từ GPA sang Điều kiện
+              const existingCond = state.condCourses.find(c => c.id === id);
+              if (existingCond) {
+                existingCond.code = code;
+                existingCond.name = name;
+                existingCond.credits = credits;
+                existingCond.group = group;
+              } else {
+                state.courses = state.courses.filter(c => c.id !== id);
+                state.condCourses.push(normalizeCondCourse({ id, code, name, credits, group, status: 'pending' }));
+              }
+              showToast(`Đã cập nhật học phần điều kiện.`);
+            } else {
+              state.condCourses.push(normalizeCondCourse({ id: generateId('cond'), code, name, credits, group, status: 'pending' }));
+              showToast(`Đã thêm học phần điều kiện "${name}".`);
+            }
+          } else {
+            const semester = Math.max(1, Math.min(8, parseInt(document.getElementById('formCourseSemester').value, 10) || 1));
+            if (id) {
+              const existingGpa = state.courses.find(c => c.id === id);
+              if (existingGpa) {
+                existingGpa.code = code;
+                existingGpa.name = name;
+                existingGpa.credits = credits;
+                existingGpa.semester = semester;
+              } else {
+                state.condCourses = state.condCourses.filter(c => c.id !== id);
+                state.courses.push(normalizeGpaCourse({ id, code, name, credits, semester }));
+              }
+              showToast(`Đã cập nhật môn "${name}".`);
+            } else {
+              state.courses.push(normalizeGpaCourse({ id: generateId('c'), code, name, credits, semester }));
+              showToast(`Đã thêm môn "${name}" vào Học kỳ ${semester}.`);
+            }
+          }
+
+          closeModal('courseFormModal');
+          saveState();
+          renderAll();
+        });
+
+        // ===== SỰ KIỆN TRÊN DANH SÁCH 8 HỌC KỲ =====
+        const semContainer = document.getElementById('semestersContainer');
+
+        // 1. Click actions (mở rộng panel, preset, thêm/xóa cột, chọn mốc tính ngược, sửa/xóa môn)
+        semContainer.addEventListener('click', (e) => {
+          const addSemBtn = e.target.closest('[data-add-sem]');
+          if (addSemBtn) {
+            openCourseModal({ mode: 'add', kind: 'gpa', defaultSemester: Number(addSemBtn.getAttribute('data-add-sem')) });
+            return;
+          }
+
+          const actionEl = e.target.closest('[data-action]');
+          if (!actionEl) return;
+          const action = actionEl.getAttribute('data-action');
+          const id = actionEl.getAttribute('data-id');
+          const course = state.courses.find(c => c.id === id);
+          if (!course) return;
+
+          if (action === 'toggle-comp') {
+            state.expandedCourseIds[id] = !state.expandedCourseIds[id];
+            renderSemestersList(computeAnalytics());
+          } else if (action === 'toggle-sim') {
+            course.isSimulated = !course.isSimulated;
+            saveState();
+            renderAll();
+            showToast(course.isSimulated ? `"${course.name}": Dự kiến (What-if)` : `"${course.name}": Chính thức`, 'info');
+          } else if (action === 'apply-preset') {
+            const presetKey = actionEl.getAttribute('data-preset');
+            const template = WEIGHT_PRESETS[presetKey];
+            if (!template) return;
+            // Giữ lại điểm cũ của cột đầu & cột cuối nếu phù hợp
+            const oldCols = course.components || [];
+            const oldFirstScore = oldCols[0] ? oldCols[0].score : '';
+            const oldFinalCol = oldCols.find(c => c.isFinal) || oldCols[oldCols.length - 1];
+            const oldFinalScore = oldFinalCol ? oldFinalCol.score : '';
+
+            course.components = template.map((t, idx) => ({
+              id: generateId('col'),
+              name: t.name,
+              weight: t.weight,
+              score: t.isFinal ? oldFinalScore : (idx === 0 && template.length === 2 ? oldFirstScore : ''),
+              isFinal: t.isFinal
+            }));
+            syncCourseFromComponents(course);
+            saveState();
+            renderAll();
+            showToast(`Đã áp dụng hệ số ${presetKey}`, 'info');
+          } else if (action === 'add-col') {
+            // Chèn cột mới ngay trước cột cuối kỳ để dễ nhập
+            const finalIdx = course.components.findIndex(col => col.isFinal);
+            const insertAt = finalIdx >= 0 ? finalIdx : course.components.length;
+            const currentSum = course.components.reduce((s, col) => s + parseWeightValue(col.weight), 0);
+            const defaultW = currentSum < 100 ? Math.max(0, 100 - currentSum) : 10;
+            course.components.splice(insertAt, 0, {
+              id: generateId('col'),
+              name: `Thành phần ${course.components.length}`,
+              weight: defaultW,
+              score: '',
+              isFinal: false
+            });
+            syncCourseFromComponents(course);
+            saveState();
+            renderAll();
+          } else if (action === 'remove-col') {
+            if (course.components.length <= 1) return;
+            const colId = actionEl.getAttribute('data-col-id');
+            course.components = course.components.filter(col => col.id !== colId);
+            if (!course.components.some(col => col.isFinal)) {
+              course.components[course.components.length - 1].isFinal = true;
+            }
+            syncCourseFromComponents(course);
+            saveState();
+            renderAll();
+          } else if (action === 'clear-comp-scores') {
+            course.components.forEach(col => { col.score = ''; });
+            saveState();
+            renderAll();
+            showToast('Đã xóa điểm các cột thành phần (bạn có thể nhập tay điểm tổng kết).', 'info');
+          } else if (action === 'pick-reverse-target') {
+            const ckVal = actionEl.getAttribute('data-ck');
+            const targetLetter = actionEl.getAttribute('data-letter');
+            const finalCol = course.components.find(col => col.isFinal) || course.components[course.components.length - 1];
+            if (!finalCol) return;
+            finalCol.score = ckVal;
+            course.isSimulated = true;
+            state.includeSimulated = true;
+            syncCourseFromComponents(course);
+            saveState();
+            renderAll();
+            showToast(`Đã điền thử ${finalCol.name} = ${ckVal} (mốc ${targetLetter}) ở chế độ Dự kiến!`, 'info');
+          } else if (action === 'edit-gpa-course') {
+            openCourseModal({ mode: 'edit', kind: 'gpa', course });
+          } else if (action === 'delete-gpa-course') {
+            showConfirm(
+              `Xóa môn "${course.name}"?`,
+              `Học phần (${course.credits} TC) sẽ bị xóa khỏi Học kỳ ${course.semester}.`,
+              () => {
+                state.courses = state.courses.filter(c => c.id !== id);
+                delete state.expandedCourseIds[id];
+                saveState();
+                renderAll();
+                showToast('Đã xóa môn học.', 'info');
+              }
+            );
+          }
+        });
+
+        // 2. Live input trong các ô thành phần (tên cột, hệ số %, điểm) -> cập nhật in-place không mất focus
+        semContainer.addEventListener('input', (e) => {
+          const field = e.target.getAttribute('data-comp-field');
+          if (!field) return;
+          const id = e.target.getAttribute('data-id');
+          const colId = e.target.getAttribute('data-col-id');
+          const course = state.courses.find(c => c.id === id);
+          if (!course) return;
+          const col = course.components.find(item => item.id === colId);
+          if (!col) return;
+
+          if (field === 'name') {
+            col.name = e.target.value;
+          } else if (field === 'weight') {
+            col.weight = e.target.value === '' ? 0 : parseWeightValue(e.target.value);
+          } else if (field === 'score') {
+            col.score = e.target.value;
+          }
+
+          const ev = syncCourseFromComponents(course);
+          saveState();
+          updateCourseVisualsInPlace(course, ev);
+          renderAnalyticsOnly();
+        });
+
+        // 3. Change events: radio chọn cột Cuối kỳ, nhập tay điểm hệ 10, chọn điểm chữ
+        semContainer.addEventListener('change', (e) => {
+          const action = e.target.getAttribute('data-action');
+          const id = e.target.getAttribute('data-id');
+          if (!action || !id) return;
+          const course = state.courses.find(c => c.id === id);
+          if (!course) return;
+
+          if (action === 'set-final-col') {
+            const colId = e.target.getAttribute('data-col-id');
+            course.components.forEach(col => { col.isFinal = col.id === colId; });
+            const ev = syncCourseFromComponents(course);
+            saveState();
+            renderSemestersList(computeAnalytics());
+            renderAnalyticsOnly();
+          } else if (action === 'score10') {
+            const raw = e.target.value.trim();
+            if (raw === '') {
+              course.score10 = null;
+              course.letter = '';
+            } else {
+              const num = parseScoreValue(raw);
+              if (num === null) {
+                course.score10 = null;
+                course.letter = '';
+              } else {
+                course.score10 = round1(num);
+                const g = score10ToGrade(course.score10);
+                course.letter = g ? g.letter : '';
+              }
+            }
+            saveState();
+            updateCourseVisualsInPlace(course, evaluateComponents(course));
+            renderAnalyticsOnly();
+          } else if (action === 'letter') {
+            const val = e.target.value;
+            if (!val) {
+              course.letter = '';
+              course.score10 = null;
+            } else {
+              const g = letterToGrade(val);
+              if (g) {
+                course.letter = g.letter;
+                const curG = score10ToGrade(course.score10);
+                if (!curG || curG.letter !== g.letter) {
+                  course.score10 = g.rep10;
+                }
+              }
+            }
+            saveState();
+            updateCourseVisualsInPlace(course, evaluateComponents(course));
+            renderAnalyticsOnly();
+          }
+        });
+
+        // ===== SỰ KIỆN TRÊN KHU VỰC HỌC PHẦN ĐIỀU KIỆN (GDQP & GDTC) =====
+        document.getElementById('conditionalContainer').addEventListener('click', (e) => {
+          const actionEl = e.target.closest('[data-action]');
+          if (!actionEl) return;
+          const action = actionEl.getAttribute('data-action');
+          const id = actionEl.getAttribute('data-id');
+          const course = state.condCourses.find(c => c.id === id);
+          if (!course) return;
+
+          if (action === 'set-cond-status') {
+            course.status = actionEl.getAttribute('data-status');
+            saveState();
+            renderAnalyticsOnly();
+            renderConditionalSection();
+          } else if (action === 'edit-cond-course') {
+            openCourseModal({ mode: 'edit', kind: 'cond', course });
+          } else if (action === 'delete-cond-course') {
+            showConfirm(
+              `Xóa học phần "${course.name}"?`,
+              `Học phần điều kiện (${course.credits} TC) này sẽ bị xóa khỏi danh sách.`,
+              () => {
+                state.condCourses = state.condCourses.filter(c => c.id !== id);
+                saveState();
+                renderAnalyticsOnly();
+                renderConditionalSection();
+                showToast('Đã xóa học phần điều kiện.', 'info');
+              }
+            );
+          }
+        });
+
+        // Đóng Modal (nút X, click nền ngoài, phím Escape)
+        document.querySelectorAll('[data-close-modal]').forEach(btn => {
+          btn.addEventListener('click', () => closeModal(btn.getAttribute('data-close-modal')));
+        });
+        ['scaleModal', 'courseFormModal', 'confirmModal'].forEach(modalId => {
+          const overlay = document.getElementById(modalId);
+          overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) closeModal(modalId);
+          });
+        });
+        document.getElementById('confirmCancelBtn').addEventListener('click', () => {
+          confirmCallback = null;
+          closeModal('confirmModal');
+        });
+        document.getElementById('confirmOkBtn').addEventListener('click', () => {
+          const fn = confirmCallback;
+          confirmCallback = null;
+          closeModal('confirmModal');
+          if (typeof fn === 'function') fn();
+        });
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') {
+            ['scaleModal', 'courseFormModal', 'confirmModal'].forEach(closeModal);
+          }
+        });
+      }
+
+      // =========================================================================
+      // 9. KHỞI TẠO
+      // =========================================================================
+      function init() {
+        loadState();
+        applyTheme();
+        bindEvents();
+        renderAll();
+      }
+
+      document.addEventListener('DOMContentLoaded', init);
+    })();
+  </script>
+</body>
+</html>
